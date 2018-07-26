@@ -1,0 +1,15 @@
+executable            = condor_capid_checker.sh
+input                 = capid_checker.py
+arguments             = $(Process)
+output                = condor_capid_checker/out_$(Cluster)_$(Process).txt
+error                 = condor_capid_checker/out_$(Cluster)_$(Process).txt
+log                   = condor_capid_checker/log_$(Cluster).txt
++JobFlavour = "longlunch"
+Notification=never
+x509userproxy = $ENV(X509_USER_PROXY)
+queue 70
+
+#transfer_input_files = $(filename)
+#arguments            = $(filename) $(Process)
+#initialdir           = /cms/chiarito/eos/hcal/task9/run316110_filebased/ZeroBias/hcaltuple_run316110/180719_085550/0000/
+#queue filename matching files *.root
