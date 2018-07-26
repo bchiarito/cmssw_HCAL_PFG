@@ -1,0 +1,2 @@
+run tree.C looper with
+$ root do_my_analysis.C("<path/to/hcal_ntuple.root>")
