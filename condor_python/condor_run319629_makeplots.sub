@@ -1,0 +1,11 @@
+executable            = condor_run319629_makeplots.sh
+input                 = fed_plots.py
+arguments             = $(Process)
+output                = condor_run319629_makeplots/out_$(Cluster)_$(Process).txt
+error                 = condor_run319629_makeplots/out_$(Cluster)_$(Process).txt
+log                   = condor_run319629_makeplots/log_$(Cluster).txt
+transfer_input_files  = detector_map_functions.py, detector_map.dat
++JobFlavour = "longlunch"
+Notification=never
+x509userproxy = $ENV(X509_USER_PROXY)
+queue 12

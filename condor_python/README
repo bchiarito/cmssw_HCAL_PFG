@@ -1,0 +1,22 @@
+The python event loop is in fed_plots.py. It imports detector_map_functions.py which defines mappings and it itself makes use of detector_map.dat as the raw mappings in txt format.
+
+Preparation of condor jobs:
+
+The condor_runXXXXXX_makeplots.sh files are where the location of the input datafiles is defined. You will have to change the line that begins with xrdcp --nopbar root:... to point to some area that has the hcal ntuples in it.  Additonally, you will have to make sure the files in that directory are named hcalTupleTree_Z.root, where Z starts at zero and counts up.
+
+Then in the asscociated condor_runXXXXXX_makeplots.sub file, change the last line which reads queue X and set X to the total nunber of files in the directory.
+
+
+To run the python event loop with condor, submit a condor job, where XXXXXX is replaced with the run you want to run on:
+
+$ condor_submit condor_runXXXXXX_makeplots.sub
+
+then check on the condor job's status with condor_wait, where YYYYYY is replaced with whatever cluster id condor assigned to the task:
+
+$ condor_wait -status condor_runXXXXXX_makeplots/log_YYYYYY.txt
+
+this will report "All jobs done." where all the jobs are done. Then you will need to aggregrate the results with the included shell script
+
+$ ./agregate_runXXXXXX.sh
+
+the result is a single filed named summed_output_runXXXXXX.root with all the plots defined in fed_plots.py using the entire run as input.
