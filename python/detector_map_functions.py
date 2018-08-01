@@ -1,7 +1,7 @@
 import sys
 
 #filename = sys.argv[1]
-filename = 'generated_map.dat'
+filename = 'detector_map.dat'
 
 mapping = {}
 

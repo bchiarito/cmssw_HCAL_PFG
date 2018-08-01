@@ -36,8 +36,8 @@ elif options.dir:
   for rootfile in rootfiles:
     chain.Add(rootfile)
 
-NUM_ENTRIES = 3
-NUM_EVENTS = 10
+NUM_ENTRIES = 0
+NUM_EVENTS = 1
 
 count = 0
 total = chain.GetEntries()
