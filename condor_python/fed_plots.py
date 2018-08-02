@@ -53,16 +53,37 @@ hist_FEDvsLS_bad.SetStats(0)
 hist_FEDvsLS_bad.GetXaxis().SetTitle('LS')
 hist_FEDvsLS_bad.GetYaxis().SetTitle('FED')
 
+# set zeros
+lumis = []
+if options.run == 316110: lumis = range(1, 210)
+elif options.run == 316972: lumis = range(1, 45)
+elif options.run == 318974: lumis = range(1, 107)
+elif options.run == 319629: lumis = range(1, 57)
+elif options.run == 320062: lumis = range(1, 21)
+else: lumis = range(1,1000)
+ho_feds = range(724, 732)
+
+for lumi in lumis:
+  for ho_fed in ho_feds:
+    hist_FEDvsLS_total.Fill(lumi, ho_fed, 1e-2)
+    hist_FEDvsLS_bad.Fill(lumi, ho_fed, 1e-2)
+
 hist_capcheck_ho = TH1F('hist_capcheck_ho','hist_capcheck_ho',4,0,4)
 hist_capcheck_he = TH1F('hist_capcheck_he','hist_capcheck_he',4,0,4)
 hist_capcheck_hf = TH1F('hist_capcheck_hf','hist_capcheck_hf',4,0,4)
 hist_capcheck_hb = TH1F('hist_capcheck_hb','hist_capcheck_hb',4,0,4)
 
-hist_avgfCvsTC_ho_good = TH1F('hist_avgfCvsTS_ho_good','hist_avgfCvsTS_ho_good',10,0,10)
-hist_avgfCvsTC_ho_bad = TH1F('hist_avgfCvsTS_ho_bad','hist_avgfCvsTS_ho_bad',10,0,10)
-hist_avgfCvsTC_he = TH1F('hist_avgfCvsTS_he','hist_avgfCvsTS_he',10,0,10)
-hist_avgfCvsTC_hf = TH1F('hist_avgfCvsTS_hf','hist_avgfCvsTS_hf',10,0,10)
-hist_avgfCvsTC_hb = TH1F('hist_avgfCvsTS_hb','hist_avgfCvsTS_hb',10,0,10)
+hist_avgfCvsTS_ho_good = TH1F('hist_avgfCvsTS_ho_good','hist_avgfCvsTS_ho_good',10,0,10)
+hist_avgfCvsTS_ho_bad = TH1F('hist_avgfCvsTS_ho_bad','hist_avgfCvsTS_ho_bad',10,0,10)
+hist_avgfCvsTS_he = TH1F('hist_avgfCvsTS_he','hist_avgfCvsTS_he',10,0,10)
+hist_avgfCvsTS_hf = TH1F('hist_avgfCvsTS_hf','hist_avgfCvsTS_hf',10,0,10)
+hist_avgfCvsTS_hb = TH1F('hist_avgfCvsTS_hb','hist_avgfCvsTS_hb',10,0,10)
+
+hist_avgfCvsTS_cut_ho_good = TH1F('hist_avgfCvsTS_cut_ho_good','hist_avgfCvsTS_cut_ho_good',10,0,10)
+hist_avgfCvsTS_cut_ho_bad = TH1F('hist_avgfCvsTS_cut_ho_bad','hist_avgfCvsTS_cut_ho_bad',10,0,10)
+hist_avgfCvsTS_cut_he = TH1F('hist_avgfCvsTS_cut_he','hist_avgfCvsTS_cut_he',10,0,10)
+hist_avgfCvsTS_cut_hf = TH1F('hist_avgfCvsTS_cut_hf','hist_avgfCvsTS_cut_hf',10,0,10)
+hist_avgfCvsTS_cut_hb = TH1F('hist_avgfCvsTS_cut_hb','hist_avgfCvsTS_cut_hb',10,0,10)
 
 hist_totalfC_ho_soi0_good = TH1F('hist_totalfC_ho_soi0_good','hist_totalfC_ho_soi0_good',200,0,100)
 hist_totalfC_ho_soi4_good = TH1F('hist_totalfC_ho_soi4_good','hist_totalfC_ho_soi4_good',200,0,100)
@@ -70,7 +91,18 @@ hist_totalfC_ho_soi0_bad = TH1F('hist_totalfC_ho_soi0_bad','hist_totalfC_ho_soi0
 hist_totalfC_ho_soi4_bad = TH1F('hist_totalfC_ho_soi4_bad','hist_totalfC_ho_soi4_bad',200,0,100)
 
 hist_totalfC_he = TH1F('hist_totalfC_he','hist_totalfC_he',200,0,10000)
-hist_totalfC_hb = TH1F('hist_totalfC_hb','hist_totalfC_hb',200,0,10000)
+hist_totalfC_hb = TH1F('hist_totalfC_hb','hist_totalfC_hb',200,0,100)
+
+hist_totalfC_ho_TS0 = TH1F('hist_totalfC_ho_TS0','hist_totalfC_ho_TS0',240,-10,50)
+hist_totalfC_ho_TS1 = TH1F('hist_totalfC_ho_TS1','hist_totalfC_ho_TS1',240,-10,50)
+hist_totalfC_ho_TS2 = TH1F('hist_totalfC_ho_TS2','hist_totalfC_ho_TS2',240,-10,50)
+hist_totalfC_ho_TS3 = TH1F('hist_totalfC_ho_TS3','hist_totalfC_ho_TS3',240,-10,50)
+hist_totalfC_ho_TS4 = TH1F('hist_totalfC_ho_TS4','hist_totalfC_ho_TS4',240,-10,50)
+hist_totalfC_ho_TS5 = TH1F('hist_totalfC_ho_TS5','hist_totalfC_ho_TS5',240,-10,50)
+hist_totalfC_ho_TS6 = TH1F('hist_totalfC_ho_TS6','hist_totalfC_ho_TS6',240,-10,50)
+hist_totalfC_ho_TS7 = TH1F('hist_totalfC_ho_TS7','hist_totalfC_ho_TS7',240,-10,50)
+hist_totalfC_ho_TS8 = TH1F('hist_totalfC_ho_TS8','hist_totalfC_ho_TS8',240,-10,50)
+hist_totalfC_ho_TS9 = TH1F('hist_totalfC_ho_TS9','hist_totalfC_ho_TS9',240,-10,50)
 
 hist_firstID_ho = TH1F('hist_firstID_ho','hist_firstID_ho',4,0,4)
 hist_firstID_he = TH1F('hist_firstID_he','hist_firstID_he',4,0,4)
@@ -130,13 +162,13 @@ while chain.GetEntry(count):
     bad_hit = False
     if not ( (chain.HODigiCapID[i][4] - bx) % 4 == 1) : bad_hit = True
     if len(feds) == 1:
-      hist_FEDvsLS_total.Fill(ls, feds[0], 1)
-      if bad_hit: hist_FEDvsLS_bad.Fill(ls, feds[0], 2)
+      hist_FEDvsLS_total.Fill(ls, int(feds[0]), 1)
+      if bad_hit: hist_FEDvsLS_bad.Fill(ls, int(feds[0]), 1)
     elif len(feds) == 2:
-      hist_FEDvsLS_total.Fill(ls, feds[0], 0.5)
-      if bad_hit: hist_FEDvsLS_bad.Fill(ls, feds[0], 0.5)
-      hist_FEDvsLS_total.Fill(ls, feds[1], 0.5)
-      if bad_hit: hist_FEDvsLS_bad.Fill(ls, feds[1], 0.5)
+      hist_FEDvsLS_total.Fill(ls, int(feds[0]), 0.5)
+      if bad_hit: hist_FEDvsLS_bad.Fill(ls, int(feds[0]), 0.5)
+      hist_FEDvsLS_total.Fill(ls, int(feds[1]), 0.5)
+      if bad_hit: hist_FEDvsLS_bad.Fill(ls, int(feds[1]), 0.5)
     else:
       print('three or more feds for a loc')
 
@@ -150,10 +182,23 @@ while chain.GetEntry(count):
     sum_fc_soi4 = 0
     hist_capcheck_ho.Fill((chain.HODigiCapID[i][4] - bx) % 4)
     bad_hit = False
+    hist_totalfC_ho_TS0.Fill(chain.HODigiFC[i][0])
+    hist_totalfC_ho_TS1.Fill(chain.HODigiFC[i][1])
+    hist_totalfC_ho_TS2.Fill(chain.HODigiFC[i][2])
+    hist_totalfC_ho_TS3.Fill(chain.HODigiFC[i][3])
+    hist_totalfC_ho_TS4.Fill(chain.HODigiFC[i][4])
+    hist_totalfC_ho_TS5.Fill(chain.HODigiFC[i][5])
+    hist_totalfC_ho_TS6.Fill(chain.HODigiFC[i][6])
+    hist_totalfC_ho_TS7.Fill(chain.HODigiFC[i][7])
+    hist_totalfC_ho_TS8.Fill(chain.HODigiFC[i][8])
+    hist_totalfC_ho_TS9.Fill(chain.HODigiFC[i][9])
     if not ( (chain.HODigiCapID[i][4] - bx) % 4 == 1) : bad_hit = True
     for j in range(len(chain.HODigiCapID[i])):
-      if not bad_hit: hist_avgfCvsTC_ho_good.Fill(j, chain.HODigiFC[i][j])
-      if     bad_hit: hist_avgfCvsTC_ho_bad.Fill(j, chain.HODigiFC[i][j])
+      if not bad_hit: hist_avgfCvsTS_ho_good.Fill(j, chain.HODigiFC[i][j])
+      if     bad_hit: hist_avgfCvsTS_ho_bad.Fill(j, chain.HODigiFC[i][j])
+      if chain.HODigiFC[i][j] > 1.0:
+        if not bad_hit: hist_avgfCvsTS_cut_ho_good.Fill(j, chain.HODigiFC[i][j])
+        if     bad_hit: hist_avgfCvsTS_cut_ho_bad.Fill(j, chain.HODigiFC[i][j])
       if (j >= 2 and j <= 5): sum_fc_soi4 += chain.HODigiFC[i][j]
       if (j >= 0 and j <= 3): sum_fc_soi0 += chain.HODigiFC[i][j]
     hist_totalfC_ho_soi0_good.Fill(sum_fc_soi0)
@@ -166,31 +211,42 @@ while chain.GetEntry(count):
     sum_fc = 0
     hist_capcheck_he.Fill((chain.QIE11DigiCapID[i][3] - bx) % 4)
     for j in range(len(chain.QIE11DigiCapID[i])):
-      hist_avgfCvsTC_he.Fill(j, chain.QIE11DigiFC[i][j])
+      hist_avgfCvsTS_he.Fill(j, chain.QIE11DigiFC[i][j])
+      if chain.QIE11DigiFC[i][j] > 1.0: hist_avgfCvsTS_cut_he.Fill(j, chain.QIE11DigiFC[i][j])  
       if (j >= 1 and j <= 4): sum_fc += chain.QIE11DigiFC[i][j]
     hist_totalfC_he.Fill(sum_fc)
 
   for i in range(len(chain.QIE10DigiCapID)):
+    hist_firstID_hf.Fill( chain.QIE10DigiCapID[i][0] )
     hist_capcheck_hf.Fill((chain.QIE10DigiCapID[i][1] - bx) % 4)
     for j in range(len(chain.QIE10DigiCapID[i])):
-      hist_avgfCvsTC_hf.Fill(j, chain.QIE10DigiFC[i][j])
+      hist_avgfCvsTS_hf.Fill(j, chain.QIE10DigiFC[i][j])
+      if chain.QIE10DigiFC[i][j] > 1.0: hist_avgfCvsTS_cut_hf.Fill(j, chain.QIE10DigiFC[i][j])
 
   for i in range(len(chain.HBHEDigiCapID)):
-    hist_firstID_hf.Fill( chain.HBHEDigiCapID[i][0] )
+    hist_firstID_hb.Fill( chain.HBHEDigiCapID[i][0] )
     sum_fc = 0
     hist_capcheck_hb.Fill((chain.HBHEDigiCapID[i][3] - bx) % 4)
     for j in range(len(chain.HBHEDigiCapID[i])):
-      hist_avgfCvsTC_hb.Fill(j, chain.HBHEDigiFC[i][j])
+      hist_avgfCvsTS_hb.Fill(j, chain.HBHEDigiFC[i][j])
+      if chain.HBHEDigiFC[i][j] > 1.0: hist_avgfCvsTS_cut_hb.Fill(j, chain.HBHEDigiFC[i][j])
       if (j >= 1 and j <= 4): sum_fc += chain.HBHEDigiFC[i][j]
     hist_totalfC_hb.Fill(sum_fc)
 
   count += 1
 
-hist_avgfCvsTC_ho_good.Scale(10.0 / hist_avgfCvsTC_ho_good.GetEntries())
-hist_avgfCvsTC_ho_bad.Scale(10.0 / hist_avgfCvsTC_ho_bad.GetEntries())
-hist_avgfCvsTC_he.Scale(8.0 / hist_avgfCvsTC_he.GetEntries())
-hist_avgfCvsTC_hf.Scale(3.0 / hist_avgfCvsTC_hf.GetEntries()) 
-hist_avgfCvsTC_hb.Scale(8.0 / hist_avgfCvsTC_hb.GetEntries()) 
+hist_avgfCvsTS_ho_good.Scale(10.0 / hist_avgfCvsTS_ho_good.GetEntries())
+hist_avgfCvsTS_ho_bad.Scale(10.0 / hist_avgfCvsTS_ho_bad.GetEntries())
+hist_avgfCvsTS_he.Scale(8.0 / hist_avgfCvsTS_he.GetEntries())
+hist_avgfCvsTS_hf.Scale(3.0 / hist_avgfCvsTS_hf.GetEntries()) 
+hist_avgfCvsTS_hb.Scale(8.0 / hist_avgfCvsTS_hb.GetEntries()) 
+
+hist_FEDvsLS_fracbad = TH2D('hist_FEDvsLS_fracbad','Fraction of total hits',300,0,300,40,700,740)
+hist_FEDvsLS_fracbad.Add(hist_FEDvsLS_bad)
+hist_FEDvsLS_fracbad.Divide(hist_FEDvsLS_total)
+hist_FEDvsLS_fracbad.SetStats(0)
+hist_FEDvsLS_fracbad.GetXaxis().SetTitle('LS')
+hist_FEDvsLS_fracbad.GetYaxis().SetTitle('FED')
 
 # Save file with histograms
 out_file.cd()
