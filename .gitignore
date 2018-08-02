@@ -1,2 +1,4 @@
-output.root
 plotting/
+*.pyc
+*.root
+**/condor_run*/**
