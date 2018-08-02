@@ -1,0 +1,8 @@
+ntuplizer/
+  changed version of hcal ntuplizer
+python/
+  python event loop plotters
+condor_python/
+  submiting python plotting scripts using condor
+cpp/
+  work in progress of c++ event loop plotters
