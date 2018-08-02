@@ -1,6 +1,6 @@
-executable            = condor_run320062_makeplots.sh
+executable            = condor_makeplots.sh
 input                 = fed_plots.py
-arguments             = $(Process)
+arguments             = $(Process) 320062 root://cmseos.fnal.gov//store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid/ZeroBias/hcaltuple_run320062/180724_151541/0000
 output                = condor_run320062_makeplots/out_$(Cluster)_$(Process).txt
 error                 = condor_run320062_makeplots/out_$(Cluster)_$(Process).txt
 log                   = condor_run320062_makeplots/log_$(Cluster).txt

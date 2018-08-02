@@ -11,7 +11,7 @@ eval `scramv1 runtime -sh`
 echo "CMSSW: "$CMSSW_BASE
 cd ../..
 echo "copying file with xrdcp"
-xrdcp --nopbar root://cmseos.fnal.gov//store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid/ZeroBias/hcaltuple_run316972/180724_151446/0000/hcalTupleTree_$1.root .
-echo 'now trying python with:' $1 $2
-python fed_plots.py --queue=$1 --run=316972
+xrdcp --nopbar $3/hcalTupleTree_$1.root .
+echo 'now trying python with:' $1
+python fed_plots.py --queue=$1 --run=$2
 rm hcalTupleTree_$1.root
