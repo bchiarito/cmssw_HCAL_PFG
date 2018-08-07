@@ -2,3 +2,4 @@ plotting/
 *.pyc
 *.root
 **/condor_run*/**
+*.png
