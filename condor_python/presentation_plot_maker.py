@@ -4,12 +4,13 @@ import sys
 CANVAS_WIDTH = 1600
 CANVAS_HEIGHT = 900
 #gStyle.SetOptStat(110000)
-gStyle.SetOptStat(0)
+#gStyle.SetOptStat(0)
 
 # setup
 fi = TFile(sys.argv[1])
 run = sys.argv[2]
-run_string = 'run_'+str(run)+'_'
+run_string = ''
+run_num = '_run_'+str(run)
 w = CANVAS_WIDTH
 h = CANVAS_HEIGHT
 c = TCanvas('c','c',w,h)
@@ -39,14 +40,59 @@ numer.Draw('Colz')
 #numer.GetXaxis().SetLimits(LS_low, LS_high)
 #numer.GetYaxis().SetLimits(FED_low, FED_high)
 c.Update()
-c.SaveAs(run_string+"FEDvsLS_badhits.png")
-c.SaveAs(run_string+"FEDvsLS_badhits.root")
+c.SaveAs(run_string+"FEDvsLS_badhits"+run_num+".png")
+c.SaveAs(run_string+"FEDvsLS_badhits"+run_num+".root")
 fraction.Draw('Colz')
 #fraction.GetXaxis().SetLimits(LS_low, LS_high)
 #fraction.GetYaxis().SetLimits(FED_low, FED_high)
 c.Update()
-c.SaveAs(run_string+"FEDvsLS_fractionbad.png")
-c.SaveAs(run_string+"FEDvsLS_fractionbad.root")
+c.SaveAs(run_string+"FEDvsLS_fractionbad"+run_num+".png")
+c.SaveAs(run_string+"FEDvsLS_fractionbad"+run_num+".root")
+
+# heat maps plots
+xaxis = 'iEta'
+yaxis = 'iPhi'
+title_good = 'Run '+run+': '+'Heat map of good hits'
+title_bad = 'Run '+run+': '+'Heat map of bad hits'
+
+good_hits = fi.Get('hist_goodhits_etaphi')
+bad_hits = fi.Get('hist_badhits_etaphi')
+good_hits.SetTitle(title_good)
+good_hits.GetXaxis().SetTitle(xaxis)
+good_hits.GetYaxis().SetTitle(yaxis)
+bad_hits.SetTitle(title_bad)
+bad_hits.GetXaxis().SetTitle(xaxis)
+bad_hits.GetYaxis().SetTitle(yaxis)
+
+good_hits.Draw('Colz')
+c.SaveAs("heatmap_goodhits"+run_num+".png")
+c.SaveAs("heatmap_goodhits"+run_num+".root")
+bad_hits.Draw('Colz')
+c.SaveAs("heatmap_badhits"+run_num+".png")
+c.SaveAs("heatmap_badhits"+run_num+".root")
+
+# Steffie's TS vs charge plots
+xaxis = 'highest charge TS'
+yaxis = 'fC'
+title_good = 'Run '+run+': '+'TS with highest charge vs fC in that TS, good hits'
+title_bad = 'Run '+run+': '+'TS with highest charge vs fC in that TS, bad hits'
+
+bad_hits = fi.Get('hist_TSvsfC_highest_bad')
+good_hits = fi.Get('hist_TSvsfC_highest_good')
+
+good_hits.SetTitle(title_good)
+good_hits.GetXaxis().SetTitle(xaxis)
+good_hits.GetYaxis().SetTitle(yaxis)
+bad_hits.SetTitle(title_bad)
+bad_hits.GetXaxis().SetTitle(xaxis)
+bad_hits.GetYaxis().SetTitle(yaxis)
+
+good_hits.Draw('Colz')
+c.SaveAs("highest_ts_vs_fc_good"+run_num+".png")
+c.SaveAs("highest_ts_vs_fc_good"+run_num+".root")
+bad_hits.Draw('Colz')
+c.SaveAs("highest_ts_vs_fc_bad"+run_num+".png")
+c.SaveAs("highest_ts_vs_fc_bad"+run_num+".root")
 
 # capid-bx mod 4 plots
 xaxis = "(CapID - BX) % 4"
@@ -76,17 +122,17 @@ for hist in capid_bx_hists:
 
 c.SetLogy(1)
 ho.Draw()
-c.SaveAs(run_string+'capid_bx_mod4_ho.png')
-c.SaveAs(run_string+'capid_bx_mod4_ho.root')
+c.SaveAs(run_string+"capid_bx_mod4_ho"+run_num+".png")
+c.SaveAs(run_string+"capid_bx_mod4_ho"+run_num+".root")
 he.Draw()
-c.SaveAs(run_string+'capid_bx_mod4_he.png')
-c.SaveAs(run_string+'capid_bx_mod4_he.root')
+c.SaveAs(run_string+"capid_bx_mod4_he"+run_num+".png")
+c.SaveAs(run_string+"capid_bx_mod4_he"+run_num+".root")
 hf.Draw()
-c.SaveAs(run_string+'capid_bx_mod4_hf.png')
-c.SaveAs(run_string+'capid_bx_mod4_hf.root')
+c.SaveAs(run_string+"capid_bx_mod4_hf"+run_num+".png")
+c.SaveAs(run_string+"capid_bx_mod4_hf"+run_num+".root")
 hb.Draw()
-c.SaveAs(run_string+'capid_bx_mod4_hb.png')
-c.SaveAs(run_string+'capid_bx_mod4_hb.root')
+c.SaveAs(run_string+"capid_bx_mod4_hb"+run_num+".png")
+c.SaveAs(run_string+"capid_bx_mod4_hb"+run_num+".root")
 c.SetLogy(0)
 
 # First capID plots
@@ -117,17 +163,17 @@ for hist in firstcapid_hists:
   hist.SetMinimum(low)
 
 ho.Draw()
-c.SaveAs(run_string+'first_capid_ho.png')
-c.SaveAs(run_string+'first_capid_ho.root')
+c.SaveAs(run_string+"first_capid_ho"+run_num+".png")
+c.SaveAs(run_string+"first_capid_ho"+run_num+".root")
 he.Draw()
-c.SaveAs(run_string+'first_capid_he.png')
-c.SaveAs(run_string+'first_capid_he.root')
+c.SaveAs(run_string+"first_capid_he"+run_num+".png")
+c.SaveAs(run_string+"first_capid_he"+run_num+".root")
 hf.Draw()
-c.SaveAs(run_string+'first_capid_hf.png')
-c.SaveAs(run_string+'first_capid_hf.root')
+c.SaveAs(run_string+"first_capid_hf"+run_num+".png")
+c.SaveAs(run_string+"first_capid_hf"+run_num+".root")
 hb.Draw()
-c.SaveAs(run_string+'first_capid_hb.png')
-c.SaveAs(run_string+'first_capid_hb.root')
+c.SaveAs(run_string+"first_capid_hb"+run_num+".png")
+c.SaveAs(run_string+"first_capid_hb"+run_num+".root")
 
 # average charge per TS plots
 xaxis = "TS"
@@ -158,14 +204,14 @@ ho_bad.SetLineColor(bad_color)
 leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
 leg.AddEntry(ho_good, legend_good_label, 'l')
 leg.AddEntry(ho_bad, legend_bad_label, 'l')
+ho_bad.SetMinimum(low)
 ho_good.SetMinimum(low)
-ho_good.SetMaximum(high)
 
-ho_good.Draw()
-ho_bad.Draw('same')
+ho_bad.Draw()
+ho_good.Draw('same')
 leg.Draw('same')
-c.SaveAs(run_string+'avgfC_per_TS.png')
-c.SaveAs(run_string+'avgfC_per_TS.root')
+c.SaveAs(run_string+"avgfC_per_TS"+run_num+".png")
+c.SaveAs(run_string+"avgfC_per_TS"+run_num+".root")
 
 # average charge per TS compare cut vs nocut plots
 xaxis = "TS"
@@ -183,7 +229,7 @@ legend_wcut_label = 'Exclude fC < 1'
 legend_wocut_label = 'Include fC > 1'
 
 ho_wcut = fi.Get("hist_avgfCvsTS_cut_ho_good")
-ho_wcut.Scale(10.0 / ho_wcut.GetEntries())
+#ho_wcut.Scale(10.0 / ho_wcut.GetEntries())
 ho_wocut = fi.Get("hist_avgfCvsTS_ho_good")
 ho_wcut.GetXaxis().SetTitle(xaxis)
 ho_wcut.GetYaxis().SetTitle(yaxis)
@@ -202,8 +248,8 @@ ho_wcut.Scale(100.0 / ho_wcut.Integral())
 ho_wocut.Draw()
 ho_wcut.Draw('same')
 leg.Draw('same')
-c.SaveAs(run_string+'avgfC_per_TS_compare_1fC_cut.png')
-c.SaveAs(run_string+'avgfC_per_TS_compare_1fC_cut.root')
+c.SaveAs(run_string+"avgfC_per_TS_compare_1fC_cut"+run_num+".png")
+c.SaveAs(run_string+"avgfC_per_TS_compare_1fC_cut"+run_num+".root")
 
 # total pulse charge plots
 xaxis = 'fC'
@@ -264,18 +310,18 @@ ho_soi4_bad.SetMaximum(high)
 ho_soi0_bad.Draw('hist')
 ho_soi0_good.Draw('hist same')
 leg_soi0.Draw('same')
-c.SaveAs(run_string+'total_pulse_charge_soi0.png')
-c.SaveAs(run_string+'total_pulse_charge_soi0.root')
+c.SaveAs(run_string+"total_pulse_charge_soi0"+run_num+".png")
+c.SaveAs(run_string+"total_pulse_charge_soi0"+run_num+".root")
 
 ho_soi4_bad.Draw('hist')
 ho_soi4_good.Draw('hist same')
 leg_soi4.Draw('same')
-c.SaveAs(run_string+'total_pulse_charge_soi4.png')
-c.SaveAs(run_string+'total_pulse_charge_soi4.root')
+c.SaveAs(run_string+"total_pulse_charge_soi4"+run_num+".png")
+c.SaveAs(run_string+"total_pulse_charge_soi4"+run_num+".root")
 
 # total charge all pulses included
 xaxis = 'fC'
-yaxis = 'Hits'
+yaxis = 'Scaled to integral 100'
 title = 'Run '+run+": "+'Total charge in TS'
 legend_title = ''
 legend_xi = 0.8
@@ -320,6 +366,7 @@ for hist in ts_hists:
   hist.GetXaxis().SetTitle(xaxis)
   hist.GetYaxis().SetTitle(yaxis)
   hist.SetTitle(title)
+  if not hist.Integral() == 0: hist.Scale( 100.0 / hist.Integral() )
 
 ts0.SetLineColor(92)
 ts1.SetLineColor(94)
@@ -344,20 +391,19 @@ leg.AddEntry(ts7, legend_ts7_label, 'l')
 leg.AddEntry(ts8, legend_ts8_label, 'l')
 leg.AddEntry(ts9, legend_ts9_label, 'l')
 
-ts0.SetMinimum(low)
-ts0.SetMaximum(high)
+ts9.SetMinimum(low)
 
-ts0.Draw()
-ts1.Draw('same')
-ts2.Draw('same')
-ts3.Draw('same')
-ts4.Draw('same')
-ts5.Draw('same')
-ts6.Draw('same')
-ts7.Draw('same')
-ts8.Draw('same')
-ts9.Draw('same')
-leg.Draw('same')
-c.SaveAs(run_string+'pulse_all_TS_separate.png')
-c.SaveAs(run_string+'pulse_all_TS_separate.root')
+ts0.Draw('hist')
+ts9.Draw('hist same')
+ts1.Draw('hist same')
+ts2.Draw('hist same')
+ts3.Draw('hist same')
+ts4.Draw('hist same')
+ts5.Draw('hist same')
+ts6.Draw('hist same')
+ts7.Draw('hist same')
+ts8.Draw('hist same')
+leg.Draw('hist same')
+c.SaveAs(run_string+"pulse_all_TS_separate"+run_num+".png")
+c.SaveAs(run_string+"pulse_all_TS_separate"+run_num+".root")
 
