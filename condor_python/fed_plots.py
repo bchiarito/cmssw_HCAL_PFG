@@ -55,11 +55,11 @@ hist_FEDvsLS_bad.GetYaxis().SetTitle('FED')
 
 # set zeros
 lumis = []
-if options.run == 316110: lumis = range(1, 210)
+if options.run == 316110: lumis = range(1, 211)
 elif options.run == 316972: lumis = range(1, 45)
-elif options.run == 318974: lumis = range(1, 107)
+elif options.run == 318974: lumis = range(1, 106)
 elif options.run == 319629: lumis = range(1, 57)
-elif options.run == 320062: lumis = range(1, 21)
+elif options.run == 320062: lumis = range(1, 22)
 else: lumis = range(1,1000)
 ho_feds = range(724, 732)
 
@@ -93,21 +93,44 @@ hist_totalfC_ho_soi4_bad = TH1F('hist_totalfC_ho_soi4_bad','hist_totalfC_ho_soi4
 hist_totalfC_he = TH1F('hist_totalfC_he','hist_totalfC_he',200,0,10000)
 hist_totalfC_hb = TH1F('hist_totalfC_hb','hist_totalfC_hb',200,0,100)
 
-hist_totalfC_ho_TS0 = TH1F('hist_totalfC_ho_TS0','hist_totalfC_ho_TS0',240,-10,50)
-hist_totalfC_ho_TS1 = TH1F('hist_totalfC_ho_TS1','hist_totalfC_ho_TS1',240,-10,50)
-hist_totalfC_ho_TS2 = TH1F('hist_totalfC_ho_TS2','hist_totalfC_ho_TS2',240,-10,50)
-hist_totalfC_ho_TS3 = TH1F('hist_totalfC_ho_TS3','hist_totalfC_ho_TS3',240,-10,50)
-hist_totalfC_ho_TS4 = TH1F('hist_totalfC_ho_TS4','hist_totalfC_ho_TS4',240,-10,50)
-hist_totalfC_ho_TS5 = TH1F('hist_totalfC_ho_TS5','hist_totalfC_ho_TS5',240,-10,50)
-hist_totalfC_ho_TS6 = TH1F('hist_totalfC_ho_TS6','hist_totalfC_ho_TS6',240,-10,50)
-hist_totalfC_ho_TS7 = TH1F('hist_totalfC_ho_TS7','hist_totalfC_ho_TS7',240,-10,50)
-hist_totalfC_ho_TS8 = TH1F('hist_totalfC_ho_TS8','hist_totalfC_ho_TS8',240,-10,50)
-hist_totalfC_ho_TS9 = TH1F('hist_totalfC_ho_TS9','hist_totalfC_ho_TS9',240,-10,50)
+hist_totalfC_ho_TS0 = TH1F('hist_totalfC_ho_TS0','hist_totalfC_ho_TS0',240,-10,500)
+hist_totalfC_ho_TS1 = TH1F('hist_totalfC_ho_TS1','hist_totalfC_ho_TS1',240,-10,500)
+hist_totalfC_ho_TS2 = TH1F('hist_totalfC_ho_TS2','hist_totalfC_ho_TS2',240,-10,500)
+hist_totalfC_ho_TS3 = TH1F('hist_totalfC_ho_TS3','hist_totalfC_ho_TS3',240,-10,500)
+hist_totalfC_ho_TS4 = TH1F('hist_totalfC_ho_TS4','hist_totalfC_ho_TS4',240,-10,500)
+hist_totalfC_ho_TS5 = TH1F('hist_totalfC_ho_TS5','hist_totalfC_ho_TS5',240,-10,500)
+hist_totalfC_ho_TS6 = TH1F('hist_totalfC_ho_TS6','hist_totalfC_ho_TS6',240,-10,500)
+hist_totalfC_ho_TS7 = TH1F('hist_totalfC_ho_TS7','hist_totalfC_ho_TS7',240,-10,500)
+hist_totalfC_ho_TS8 = TH1F('hist_totalfC_ho_TS8','hist_totalfC_ho_TS8',240,-10,500)
+hist_totalfC_ho_TS9 = TH1F('hist_totalfC_ho_TS9','hist_totalfC_ho_TS9',240,-10,500)
+
+hist_totalfC_cut_ho_TS0 = TH1F('hist_totalfC_cut_ho_TS0','hist_totalfC_cut_ho_TS0',240,-10,500)
+hist_totalfC_cut_ho_TS1 = TH1F('hist_totalfC_cut_ho_TS1','hist_totalfC_cut_ho_TS1',240,-10,500)
+hist_totalfC_cut_ho_TS2 = TH1F('hist_totalfC_cut_ho_TS2','hist_totalfC_cut_ho_TS2',240,-10,500)
+hist_totalfC_cut_ho_TS3 = TH1F('hist_totalfC_cut_ho_TS3','hist_totalfC_cut_ho_TS3',240,-10,500)
+hist_totalfC_cut_ho_TS4 = TH1F('hist_totalfC_cut_ho_TS4','hist_totalfC_cut_ho_TS4',240,-10,500)
+hist_totalfC_cut_ho_TS5 = TH1F('hist_totalfC_cut_ho_TS5','hist_totalfC_cut_ho_TS5',240,-10,500)
+hist_totalfC_cut_ho_TS6 = TH1F('hist_totalfC_cut_ho_TS6','hist_totalfC_cut_ho_TS6',240,-10,500)
+hist_totalfC_cut_ho_TS7 = TH1F('hist_totalfC_cut_ho_TS7','hist_totalfC_cut_ho_TS7',240,-10,500)
+hist_totalfC_cut_ho_TS8 = TH1F('hist_totalfC_cut_ho_TS8','hist_totalfC_cut_ho_TS8',240,-10,500)
+hist_totalfC_cut_ho_TS9 = TH1F('hist_totalfC_cut_ho_TS9','hist_totalfC_cut_ho_TS9',240,-10,500)
 
 hist_firstID_ho = TH1F('hist_firstID_ho','hist_firstID_ho',4,0,4)
 hist_firstID_he = TH1F('hist_firstID_he','hist_firstID_he',4,0,4)
 hist_firstID_hb = TH1F('hist_firstID_hb','hist_firstID_hb',4,0,4)
 hist_firstID_hf = TH1F('hist_firstID_hf','hist_firstID_hf',4,0,4)
+
+hist_badhits_etaphi = TH2D('hist_badhits_etaphi','hist_badhits_etaphi',200,-100,100,100,0,100)
+hist_goodhits_etaphi = TH2D('hist_goodhits_etaphi','hist_goodhits_etaphi',200,-100,100,100,0,100)
+
+hist_TSvsfC_highest_bad = TH2D('hist_TSvsfC_highest_bad','hist_TSvsfC_highest_bad',10,0,10,50,0,50)
+hist_TSvsfC_highest_good = TH2D('hist_TSvsfC_highest_good','hist_TSvsfC_highest_good',10,0,10,50,0,50)
+
+highest_good = [-100.0, [-10.0]*10]
+highest_bad = [-100.0, [-10.0]*10]
+
+hist_tot_fc_in_TS = TH1D('hist_tot_fc_in_TS','hist_tot_fc_in_TS',10,0,10)
+hist_tot_n_in_TS = TH1D('hist_tot_n_in_TS','hist_tot_n_in_TS',10,0,10)
 
 # individual branches to get
 b_ls = array('I', [0])
@@ -161,6 +184,10 @@ while chain.GetEntry(count):
     feds = detmap.loc_to_fed(eta, phi, depth)
     bad_hit = False
     if not ( (chain.HODigiCapID[i][4] - bx) % 4 == 1) : bad_hit = True
+
+    if bad_hit: hist_badhits_etaphi.Fill(eta, phi)
+    else: hist_goodhits_etaphi.Fill(eta, phi)
+
     if len(feds) == 1:
       hist_FEDvsLS_total.Fill(ls, int(feds[0]), 1)
       if bad_hit: hist_FEDvsLS_bad.Fill(ls, int(feds[0]), 1)
@@ -180,8 +207,20 @@ while chain.GetEntry(count):
     hist_firstID_ho.Fill( chain.HODigiCapID[i][0] )
     sum_fc_soi0 = 0
     sum_fc_soi4 = 0
+    sum_fc = 0
     hist_capcheck_ho.Fill((chain.HODigiCapID[i][4] - bx) % 4)
     bad_hit = False
+    if chain.HODigiFC[i][0] > 1: hist_totalfC_cut_ho_TS0.Fill(chain.HODigiFC[i][0])
+    if chain.HODigiFC[i][1] > 1: hist_totalfC_cut_ho_TS1.Fill(chain.HODigiFC[i][1])
+    if chain.HODigiFC[i][2] > 1: hist_totalfC_cut_ho_TS2.Fill(chain.HODigiFC[i][2])
+    if chain.HODigiFC[i][3] > 1: hist_totalfC_cut_ho_TS3.Fill(chain.HODigiFC[i][3])
+    if chain.HODigiFC[i][4] > 1: hist_totalfC_cut_ho_TS4.Fill(chain.HODigiFC[i][4])
+    if chain.HODigiFC[i][5] > 1: hist_totalfC_cut_ho_TS5.Fill(chain.HODigiFC[i][5])
+    if chain.HODigiFC[i][6] > 1: hist_totalfC_cut_ho_TS6.Fill(chain.HODigiFC[i][6])
+    if chain.HODigiFC[i][7] > 1: hist_totalfC_cut_ho_TS7.Fill(chain.HODigiFC[i][7])
+    if chain.HODigiFC[i][8] > 1: hist_totalfC_cut_ho_TS8.Fill(chain.HODigiFC[i][8])
+    if chain.HODigiFC[i][9] > 1: hist_totalfC_cut_ho_TS9.Fill(chain.HODigiFC[i][9])
+
     hist_totalfC_ho_TS0.Fill(chain.HODigiFC[i][0])
     hist_totalfC_ho_TS1.Fill(chain.HODigiFC[i][1])
     hist_totalfC_ho_TS2.Fill(chain.HODigiFC[i][2])
@@ -193,7 +232,11 @@ while chain.GetEntry(count):
     hist_totalfC_ho_TS8.Fill(chain.HODigiFC[i][8])
     hist_totalfC_ho_TS9.Fill(chain.HODigiFC[i][9])
     if not ( (chain.HODigiCapID[i][4] - bx) % 4 == 1) : bad_hit = True
+    highest_fc_in_ts = -100.0
+    highest_ts = -1
     for j in range(len(chain.HODigiCapID[i])):
+      hist_tot_fc_in_TS.Fill(j, chain.HODigiFC[i][j])
+      hist_tot_n_in_TS.Fill(j)
       if not bad_hit: hist_avgfCvsTS_ho_good.Fill(j, chain.HODigiFC[i][j])
       if     bad_hit: hist_avgfCvsTS_ho_bad.Fill(j, chain.HODigiFC[i][j])
       if chain.HODigiFC[i][j] > 1.0:
@@ -201,10 +244,35 @@ while chain.GetEntry(count):
         if     bad_hit: hist_avgfCvsTS_cut_ho_bad.Fill(j, chain.HODigiFC[i][j])
       if (j >= 2 and j <= 5): sum_fc_soi4 += chain.HODigiFC[i][j]
       if (j >= 0 and j <= 3): sum_fc_soi0 += chain.HODigiFC[i][j]
+      sum_fc += chain.HODigiFC[i][j]
+      if chain.HODigiFC[i][j] > highest_fc_in_ts:
+        highest_fc_in_ts = chain.HODigiFC[i][j]
+        highest_ts = j
+    
+    if bad_hit: hist_TSvsfC_highest_bad.Fill(highest_ts, highest_fc_in_ts)
+    else: hist_TSvsfC_highest_good.Fill(highest_ts, highest_fc_in_ts)
+
     hist_totalfC_ho_soi0_good.Fill(sum_fc_soi0)
     hist_totalfC_ho_soi4_good.Fill(sum_fc_soi4)
     if bad_hit: hist_totalfC_ho_soi0_bad.Fill(sum_fc_soi0)
     if bad_hit: hist_totalfC_ho_soi4_bad.Fill(sum_fc_soi4)
+    ts_shape = []
+    ts_shape.append(chain.HODigiFC[i][0])
+    ts_shape.append(chain.HODigiFC[i][1])
+    ts_shape.append(chain.HODigiFC[i][2])
+    ts_shape.append(chain.HODigiFC[i][3])
+    ts_shape.append(chain.HODigiFC[i][4])
+    ts_shape.append(chain.HODigiFC[i][5])
+    ts_shape.append(chain.HODigiFC[i][6])
+    ts_shape.append(chain.HODigiFC[i][7])
+    ts_shape.append(chain.HODigiFC[i][8])
+    ts_shape.append(chain.HODigiFC[i][9])
+    if bad_hit and sum_fc > highest_bad[0]:
+      highest_bad[0] = sum_fc
+      highest_bad[1] = ts_shape
+    if not bad_hit and sum_fc > highest_good[0]:
+      highest_good[0] = sum_fc
+      highest_good[1] = ts_shape
 
   for i in range(len(chain.QIE11DigiCapID)):
     hist_firstID_he.Fill( chain.QIE11DigiCapID[i][0] )
@@ -234,12 +302,19 @@ while chain.GetEntry(count):
     hist_totalfC_hb.Fill(sum_fc)
 
   count += 1
+  if count == 50: break
 
 hist_avgfCvsTS_ho_good.Scale(10.0 / hist_avgfCvsTS_ho_good.GetEntries())
 hist_avgfCvsTS_ho_bad.Scale(10.0 / hist_avgfCvsTS_ho_bad.GetEntries())
 hist_avgfCvsTS_he.Scale(8.0 / hist_avgfCvsTS_he.GetEntries())
 hist_avgfCvsTS_hf.Scale(3.0 / hist_avgfCvsTS_hf.GetEntries()) 
 hist_avgfCvsTS_hb.Scale(8.0 / hist_avgfCvsTS_hb.GetEntries()) 
+
+hist_avgfCvsTS_cut_ho_good.Scale(10.0 / hist_avgfCvsTS_cut_ho_good.GetEntries())
+hist_avgfCvsTS_cut_ho_bad.Scale(10.0 / hist_avgfCvsTS_cut_ho_bad.GetEntries())
+hist_avgfCvsTS_cut_he.Scale(8.0 / hist_avgfCvsTS_cut_he.GetEntries())
+hist_avgfCvsTS_cut_hf.Scale(3.0 / hist_avgfCvsTS_cut_hf.GetEntries()) 
+hist_avgfCvsTS_cut_hb.Scale(8.0 / hist_avgfCvsTS_cut_hb.GetEntries()) 
 
 hist_FEDvsLS_fracbad = TH2D('hist_FEDvsLS_fracbad','Fraction of total hits',300,0,300,40,700,740)
 hist_FEDvsLS_fracbad.Add(hist_FEDvsLS_bad)
@@ -248,7 +323,22 @@ hist_FEDvsLS_fracbad.SetStats(0)
 hist_FEDvsLS_fracbad.GetXaxis().SetTitle('LS')
 hist_FEDvsLS_fracbad.GetYaxis().SetTitle('FED')
 
-# Save file with histograms
+print('highest_good', highest_good)
+print('highest_bad', highest_bad)
+
+hist_highest_bad_pulse = TH1D('hist_highest_bad_pulse'+'_r'+str(options.run)+'_q'+str(options.queue),'hist_highest_bad_pulse'+'_r'+str(options.run)+'_q'+str(options.queue),10,0,10)
+hist_highest_good_pulse = TH1D('hist_highest_good_pulse'+'_r'+str(options.run)+'_q'+str(options.queue),'hist_highest_good_pulse'+'_r'+str(options.run)+'_q'+str(options.queue),10,0,10)
+
+for entry in enumerate(highest_bad[1]):
+  hist_highest_bad_pulse.Fill(entry[0], entry[1])
+for entry in enumerate(highest_good[1]):
+  hist_highest_good_pulse.Fill(entry[0], entry[1])
+
+hist_avg_fc_in_TS = TH1D('hist_avg_fc_in_TS','hist_avg_fc_in_TS',10,0,10)
+hist_avg_fc_in_TS.Add(hist_tot_fc_in_TS)
+hist_avg_fc_in_TS.Divide(hist_tot_n_in_TS)
+
+# Save file
 out_file.cd()
 out_file.Write()
 out_file.Close()
