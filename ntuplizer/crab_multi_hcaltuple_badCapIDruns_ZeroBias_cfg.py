@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import getUsernameFromSiteDB
 config = Configuration()
 
 config.section_('General')
-config.General.workArea = 'crab_multi_hcaltuple_badCapIDruns_cmslpc'
+config.General.workArea = 'crab_multi_hcaltuple_badCapIDruns_ZeroBias'
 config.General.transferOutputs = True
 config.General.transferLogs = True
 
@@ -14,10 +14,10 @@ config.JobType.pyCfgParams = ['outputFile=hcalTupleTree.root']
 
 config.section_('Data')
 config.Data.inputDBS = 'global'
-config.Data.splitting = 'LumiBased'
-config.Data.unitsPerJob = 5
+config.Data.splitting = 'EventAwareLumiBased'
+config.Data.unitsPerJob = 2000
 config.Data.lumiMask = ''
-config.Data.outLFNDirBase = '/store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid/'
+config.Data.outLFNDirBase = '/store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid_zerobias/'
 config.Data.publication = False
 
 config.section_('User')
@@ -59,12 +59,6 @@ if __name__ == '__main__':
     config.Data.runRange = '316972'
     submit(config)
 
-    config.General.requestName = 'hcaltuple_run317738'
-    config.Data.outputDatasetTag = "hcaltuple_run317738"
-    config.Data.inputDataset = '/ZeroBias/Run2018B-v1/RAW'
-    config.Data.runRange = '317738'
-    submit(config)
-
     config.General.requestName = 'hcaltuple_run318983'
     config.Data.outputDatasetTag = "hcaltuple_run318983"
     config.Data.inputDataset = '/ZeroBias/Run2018B-v1/RAW'
@@ -82,3 +76,22 @@ if __name__ == '__main__':
     config.Data.inputDataset = '/ZeroBias/Run2018C-v1/RAW'
     config.Data.runRange = '320062'
     submit(config)
+
+    config.General.requestName = 'hcaltuple_run320983'
+    config.Data.outputDatasetTag = "hcaltuple_run320983"
+    config.Data.inputDataset = '/ZeroBias/Run2018D-v1/RAW'
+    config.Data.runRange = '320983'
+    submit(config)
+
+    config.General.requestName = 'hcaltuple_run321005'
+    config.Data.outputDatasetTag = "hcaltuple_run321005"
+    config.Data.inputDataset = '/ZeroBias/Run2018D-v1/RAW'
+    config.Data.runRange = '321005'
+    submit(config)
+
+    config.General.requestName = 'hcaltuple_run321126'
+    config.Data.outputDatasetTag = "hcaltuple_run321126"
+    config.Data.inputDataset = '/ZeroBias/Run2018D-v1/RAW'
+    config.Data.runRange = '321126'
+    submit(config)
+
