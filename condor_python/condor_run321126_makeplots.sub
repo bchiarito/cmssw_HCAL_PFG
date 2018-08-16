@@ -1,11 +1,12 @@
 executable            = condor_makeplots.sh
-input                 = fed_plots.py
+input                 = ../fed_plots.py
 arguments             = $(Process) 321126 root://cmseos.fnal.gov//store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid_zerobias/ZeroBias/hcaltuple_run321126/180813_153013/0000
 initialdir            = condor_run321126_makeplots
 output                = out_$(Cluster)_$(Process).txt
 error                 = out_$(Cluster)_$(Process).txt
 log                   = log_$(Cluster).txt
-transfer_input_files  = detector_map_functions.py, detector_map.dat
+transfer_input_files  = ../detector_map_functions.py, ../detector_map.dat
+should_transfer_files = YES
 +JobFlavour           = "longlunch"
 Notification          = never
 x509userproxy         = $ENV(X509_USER_PROXY)
