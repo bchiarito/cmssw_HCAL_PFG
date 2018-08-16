@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import getUsernameFromSiteDB
 config = Configuration()
 
 config.section_('General')
-config.General.workArea = 'crab_multi_hcaltuple_badCapIDruns_cmslpc'
+config.General.workArea = 'crab_multi_hcaltuple_badCapIDruns_JetHT'
 config.General.transferOutputs = True
 config.General.transferLogs = True
 
