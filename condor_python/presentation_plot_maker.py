@@ -4,406 +4,1242 @@ import sys
 CANVAS_WIDTH = 1600
 CANVAS_HEIGHT = 900
 #gStyle.SetOptStat(110000)
-#gStyle.SetOptStat(0)
+gStyle.SetOptStat(0)
 
 # setup
 fi = TFile(sys.argv[1])
 run = sys.argv[2]
-run_string = ''
 run_num = '_run_'+str(run)
+run_string = 'Run '+run+': '
 w = CANVAS_WIDTH
 h = CANVAS_HEIGHT
 c = TCanvas('c','c',w,h)
 #c = TCanvas('c','c')
-
-# FED vs LS plots
-badhits_title = 'Run '+run+": "+"Number of bad hits"
-fractionbad_title = 'Run '+run+": "+"Fraction of bad hits"
-FED_low = 724
-FED_high = 731
-LS_low = 0
+LS_low = 1
 LS_high = 0
 if run == 316110: LS_high = 209
 if run == 316972: LS_high = 44
 if run == 318974: LS_high = 106
 if run == 319629: LS_high = 57
 if run == 320062: LS_high = 31
+if run == '321005 JetHT': LS_high = 59
+if run == '321005': LS_high = 59
 
-numer = fi.Get("hist_FEDvsLS_bad")
-denom = fi.Get("hist_FEDvsLS_total")
-fraction = numer.Clone()
-fraction.Divide(denom)
-numer.SetTitle(badhits_title)
-fraction.SetTitle(fractionbad_title)
+outputfile = TFile('histos'+run_num+'.root', 'RECREATE')
 
-numer.Draw('Colz')
-#numer.GetXaxis().SetLimits(LS_low, LS_high)
-#numer.GetYaxis().SetLimits(FED_low, FED_high)
-c.Update()
-c.SaveAs(run_string+"FEDvsLS_badhits"+run_num+".png")
-c.SaveAs(run_string+"FEDvsLS_badhits"+run_num+".root")
-fraction.Draw('Colz')
-#fraction.GetXaxis().SetLimits(LS_low, LS_high)
-#fraction.GetYaxis().SetLimits(FED_low, FED_high)
-c.Update()
-c.SaveAs(run_string+"FEDvsLS_fractionbad"+run_num+".png")
-c.SaveAs(run_string+"FEDvsLS_fractionbad"+run_num+".root")
+# total pulse
+if True:
+  xaxis_ADC = 'Summed total ADC'
+  xaxis_fC = 'Summed total fC'
+  yaxis = 'Scaled to unit integral'
 
-# heat maps plots
-xaxis = 'iEta'
-yaxis = 'iPhi'
-title_good = 'Run '+run+': '+'Heat map of good hits'
-title_bad = 'Run '+run+': '+'Heat map of bad hits'
+  title_soi0_ADC_cut0 = 'HO, ADC summed in TS 0-3'
+  title_soi0_ADC_cut1 = 'HO, ADC summed in TS 0-3, cut at 1'
+  title_soi0_ADC_cut2 = 'HO, ADC summed in TS 0-3, cut at 2'
 
-good_hits = fi.Get('hist_goodhits_etaphi')
-bad_hits = fi.Get('hist_badhits_etaphi')
-good_hits.SetTitle(title_good)
-good_hits.GetXaxis().SetTitle(xaxis)
-good_hits.GetYaxis().SetTitle(yaxis)
-bad_hits.SetTitle(title_bad)
-bad_hits.GetXaxis().SetTitle(xaxis)
-bad_hits.GetYaxis().SetTitle(yaxis)
+  title_soi4_ADC_cut0 = 'HO, ADC summed in TS 2-5'
+  title_soi4_ADC_cut1 = 'HO, ADC summed in TS 2-5, cut at 1'
+  title_soi4_ADC_cut2 = 'HO, ADC summed in TS 2-5, cut at 2'
 
-good_hits.Draw('Colz')
-c.SaveAs("heatmap_goodhits"+run_num+".png")
-c.SaveAs("heatmap_goodhits"+run_num+".root")
-bad_hits.Draw('Colz')
-c.SaveAs("heatmap_badhits"+run_num+".png")
-c.SaveAs("heatmap_badhits"+run_num+".root")
+  title_soi0_fC_cut0 = 'HO, fC summed in TS 0-3'
+  title_soi0_fC_cut1 = 'HO, fC summed in TS 0-3, cut at 1'
+  title_soi0_fC_cut2 = 'HO, fC summed in TS 0-3, cut at 2'
 
-# Steffie's TS vs charge plots
-xaxis = 'highest charge TS'
-yaxis = 'fC'
-title_good = 'Run '+run+': '+'TS with highest charge vs fC in that TS, good hits'
-title_bad = 'Run '+run+': '+'TS with highest charge vs fC in that TS, bad hits'
+  title_soi4_fC_cut0 = 'HO, fC summed in TS 2-5'
+  title_soi4_fC_cut1 = 'HO, fC summed in TS 2-5, cut at 1'
+  title_soi4_fC_cut2 = 'HO, fC summed in TS 2-5, cut at 2'
 
-bad_hits = fi.Get('hist_TSvsfC_highest_bad')
-good_hits = fi.Get('hist_TSvsfC_highest_good')
+  legend_title = ''
+  legend_xi = 0.75
+  legend_xf = 0.9
+  legend_yi = 0.7
+  legend_yf = 0.9
+  good_label = 'Good hits'
+  bad_label = 'Bad hits'
+  good_color = kBlack
+  bad_color = kRed
 
-good_hits.SetTitle(title_good)
-good_hits.GetXaxis().SetTitle(xaxis)
-good_hits.GetYaxis().SetTitle(yaxis)
-bad_hits.SetTitle(title_bad)
-bad_hits.GetXaxis().SetTitle(xaxis)
-bad_hits.GetYaxis().SetTitle(yaxis)
+  ADC_low = 0
+  ADC_high = 200
+  ADC_veryhigh = 200
+  fC_low = 0
+  fC_high = 100
+  fC_veryhigh = 200
 
-good_hits.Draw('Colz')
-c.SaveAs("highest_ts_vs_fc_good"+run_num+".png")
-c.SaveAs("highest_ts_vs_fc_good"+run_num+".root")
-bad_hits.Draw('Colz')
-c.SaveAs("highest_ts_vs_fc_bad"+run_num+".png")
-c.SaveAs("highest_ts_vs_fc_bad"+run_num+".root")
+  rebin = 4
 
-# capid-bx mod 4 plots
-xaxis = "(CapID - BX) % 4"
-yaxis = "Hits"
+  low = 10e-5
+  c.SetLogy()
 
-ho_title = 'Run '+run+": "+"HO"
-he_title = 'Run '+run+": "+"HE"
-hf_title = 'Run '+run+": "+"HF"
-hb_title = 'Run '+run+": "+"HB"
+  good = fi.Get('hist_ho_summedADC_soi0_12_414243_nocut_good')
+  bad = fi.Get('hist_ho_summedADC_soi0_12_414243_nocut_bad')
+  good.GetXaxis().SetTitle(xaxis_ADC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi0_ADC_cut0)
+  good.GetXaxis().SetRange(1, good.GetBin(ADC_high))
+  bad.GetXaxis().SetRange(1, bad.GetBin(ADC_high))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi0_ADC_cut0'+run_num+'.png')
 
-ho = fi.Get("hist_capcheck_ho")
-he = fi.Get("hist_capcheck_he")
-hf = fi.Get("hist_capcheck_hf")
-hb = fi.Get("hist_capcheck_hb")
-ho.SetTitle(ho_title)
-he.SetTitle(he_title)
-hf.SetTitle(hf_title)
-hb.SetTitle(hb_title)
-capid_bx_hists = []
-capid_bx_hists.append(ho)
-capid_bx_hists.append(he)
-capid_bx_hists.append(hf)
-capid_bx_hists.append(hb)
-for hist in capid_bx_hists:
-  hist.GetXaxis().SetTitle(xaxis)
-  hist.GetYaxis().SetTitle(yaxis)
+  good = fi.Get('hist_ho_summedADC_soi0_12_414243_cut15_good')
+  bad = fi.Get('hist_ho_summedADC_soi0_12_414243_cut15_bad')
+  good.GetXaxis().SetTitle(xaxis_ADC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi0_ADC_cut1)
+  good.GetXaxis().SetRange(1, good.GetBin(ADC_high))
+  bad.GetXaxis().SetRange(1, bad.GetBin(ADC_high))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi0_ADC_cut1'+run_num+'.png')
 
-c.SetLogy(1)
-ho.Draw()
-c.SaveAs(run_string+"capid_bx_mod4_ho"+run_num+".png")
-c.SaveAs(run_string+"capid_bx_mod4_ho"+run_num+".root")
-he.Draw()
-c.SaveAs(run_string+"capid_bx_mod4_he"+run_num+".png")
-c.SaveAs(run_string+"capid_bx_mod4_he"+run_num+".root")
-hf.Draw()
-c.SaveAs(run_string+"capid_bx_mod4_hf"+run_num+".png")
-c.SaveAs(run_string+"capid_bx_mod4_hf"+run_num+".root")
-hb.Draw()
-c.SaveAs(run_string+"capid_bx_mod4_hb"+run_num+".png")
-c.SaveAs(run_string+"capid_bx_mod4_hb"+run_num+".root")
-c.SetLogy(0)
+  good = fi.Get('hist_ho_summedADC_soi0_12_414243_cut20_good')
+  bad = fi.Get('hist_ho_summedADC_soi0_12_414243_cut20_bad')
+  good = good.Rebin(rebin)
+  bad = bad.Rebin(rebin)
+  good.GetXaxis().SetTitle(xaxis_ADC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi0_ADC_cut2)
+  good.GetXaxis().SetRange(1, good.GetBin(ADC_veryhigh/rebin))
+  bad.GetXaxis().SetRange(1, bad.GetBin(ADC_veryhigh/rebin))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi0_ADC_cut2'+run_num+'.png')
 
-# First capID plots
-xaxis = "CapID of TS 0"
-yaxis = "Hits"
-ho_title = 'Run '+run+": "+"CapID of TS 0 for hits in HO"
-he_title = 'Run '+run+": "+"CapID of TS 0 for hits in HE"
-hf_title = 'Run '+run+": "+"CapID of TS 0 for hits in HF"
-hb_title = 'Run '+run+": "+"CapID of TS 0 for hits in HB"
-low = 0
+  good = fi.Get('hist_ho_summedADC_soi4_12_414243_nocut_good')
+  bad = fi.Get('hist_ho_summedADC_soi4_12_414243_nocut_bad')
+  good.GetXaxis().SetTitle(xaxis_ADC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi4_ADC_cut0)
+  good.GetXaxis().SetRange(1, good.GetBin(ADC_high))
+  bad.GetXaxis().SetRange(1, bad.GetBin(ADC_high))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi4_ADC_cut0'+run_num+'.png')
 
-ho = fi.Get("hist_firstID_ho")
-he = fi.Get("hist_firstID_he")
-hf = fi.Get("hist_firstID_hf")
-hb = fi.Get("hist_firstID_hb")
-ho.SetTitle(ho_title)
-he.SetTitle(he_title)
-hf.SetTitle(hf_title)
-hb.SetTitle(hb_title)
-firstcapid_hists = []
-firstcapid_hists.append(ho)
-firstcapid_hists.append(he)
-firstcapid_hists.append(hf)
-firstcapid_hists.append(hb)
-for hist in firstcapid_hists:
-  hist.GetXaxis().SetTitle(xaxis)
-  hist.GetYaxis().SetTitle(yaxis)
-  hist.SetMinimum(low)
+  good = fi.Get('hist_ho_summedADC_soi4_12_414243_cut15_good')
+  bad = fi.Get('hist_ho_summedADC_soi4_12_414243_cut15_bad')
+  good.GetXaxis().SetTitle(xaxis_ADC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi4_ADC_cut1)
+  good.GetXaxis().SetRange(1, good.GetBin(ADC_high))
+  bad.GetXaxis().SetRange(1, bad.GetBin(ADC_high))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi4_ADC_cut1'+run_num+'.png')
 
-ho.Draw()
-c.SaveAs(run_string+"first_capid_ho"+run_num+".png")
-c.SaveAs(run_string+"first_capid_ho"+run_num+".root")
-he.Draw()
-c.SaveAs(run_string+"first_capid_he"+run_num+".png")
-c.SaveAs(run_string+"first_capid_he"+run_num+".root")
-hf.Draw()
-c.SaveAs(run_string+"first_capid_hf"+run_num+".png")
-c.SaveAs(run_string+"first_capid_hf"+run_num+".root")
-hb.Draw()
-c.SaveAs(run_string+"first_capid_hb"+run_num+".png")
-c.SaveAs(run_string+"first_capid_hb"+run_num+".root")
+  good = fi.Get('hist_ho_summedADC_soi4_12_414243_cut20_good')
+  bad = fi.Get('hist_ho_summedADC_soi4_12_414243_cut20_bad')
+  good = good.Rebin(rebin)
+  bad = bad.Rebin(rebin)
+  good.GetXaxis().SetTitle(xaxis_ADC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi4_ADC_cut2)
+  good.GetXaxis().SetRange(1, good.GetBin(ADC_veryhigh/rebin))
+  bad.GetXaxis().SetRange(1, bad.GetBin(ADC_veryhigh/rebin))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi4_ADC_cut2'+run_num+'.png')
 
-# average charge per TS plots
-xaxis = "TS"
-yaxis = 'Average Charge (fC)'
-title = 'Run '+run+": "+"Average Charge per Time Slice"
-good_color = kBlack
-bad_color = kRed
-legend_title = ''
-legend_xi = 0.7
-legend_xf = 0.9
-legend_yi = 0.7
-legend_yf = 0.8
-legend_good_label = 'Good hits'
-legend_bad_label = 'Bad hits'
-low = 0
-high = 25
+  good = fi.Get('hist_ho_summedfC_soi0_12_414243_nocut_good')
+  bad = fi.Get('hist_ho_summedfC_soi0_12_414243_nocut_bad')
+  good.GetXaxis().SetTitle(xaxis_fC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi0_fC_cut0)
+  good.GetXaxis().SetRange(1, good.GetBin(fC_high))
+  bad.GetXaxis().SetRange(1, bad.GetBin(fC_high))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi0_fC_cut0'+run_num+'.png')
 
-ho_good = fi.Get("hist_avgfCvsTS_ho_good")
-ho_bad = fi.Get("hist_avgfCvsTS_ho_bad")
-ho_good.GetXaxis().SetTitle(xaxis)
-ho_good.GetYaxis().SetTitle(yaxis)
-ho_good.SetTitle(title)
-ho_bad.GetXaxis().SetTitle(xaxis)
-ho_bad.GetYaxis().SetTitle(yaxis)
-ho_bad.SetTitle(title)
-ho_good.SetLineColor(good_color)
-ho_bad.SetLineColor(bad_color)
-leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
-leg.AddEntry(ho_good, legend_good_label, 'l')
-leg.AddEntry(ho_bad, legend_bad_label, 'l')
-ho_bad.SetMinimum(low)
-ho_good.SetMinimum(low)
+  good = fi.Get('hist_ho_summedfC_soi0_12_414243_cut15_good')
+  bad = fi.Get('hist_ho_summedfC_soi0_12_414243_cut15_bad')
+  good.GetXaxis().SetTitle(xaxis_fC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi0_fC_cut1)
+  good.GetXaxis().SetRange(1, good.GetBin(fC_high))
+  bad.GetXaxis().SetRange(1, bad.GetBin(fC_high))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi0_fC_cut1'+run_num+'.png')
 
-ho_bad.Draw()
-ho_good.Draw('same')
-leg.Draw('same')
-c.SaveAs(run_string+"avgfC_per_TS"+run_num+".png")
-c.SaveAs(run_string+"avgfC_per_TS"+run_num+".root")
+  good = fi.Get('hist_ho_summedfC_soi0_12_414243_cut20_good')
+  bad = fi.Get('hist_ho_summedfC_soi0_12_414243_cut20_bad')
+  good = good.Rebin(rebin)
+  bad = bad.Rebin(rebin)
+  good.GetXaxis().SetTitle(xaxis_fC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi0_fC_cut2)
+  good.GetXaxis().SetRange(1, good.GetBin(fC_veryhigh/rebin))
+  bad.GetXaxis().SetRange(1, bad.GetBin(fC_veryhigh/rebin))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi0_fC_cut2'+run_num+'.png')
 
-# average charge per TS compare cut vs nocut plots
-xaxis = "TS"
-#yaxis = 'Average charge (fC)'
-yaxis = 'Scaled to Integral 100'
-title = 'Run '+run+": "+"Average charge per TS, good hits"
-wcut_color = kBlue
-wocut_color = kBlack
-legend_title = ''
-legend_xi = 0.7
-legend_xf = 0.9
-legend_yi = 0.7
-legend_yf = 0.8
-legend_wcut_label = 'Exclude fC < 1'
-legend_wocut_label = 'Include fC > 1'
+  good = fi.Get('hist_ho_summedfC_soi4_12_414243_nocut_good')
+  bad = fi.Get('hist_ho_summedfC_soi4_12_414243_nocut_bad')
+  good.GetXaxis().SetTitle(xaxis_fC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi4_fC_cut0)
+  good.GetXaxis().SetRange(1, good.GetBin(fC_high))
+  bad.GetXaxis().SetRange(1, bad.GetBin(fC_high))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi4_fC_cut0'+run_num+'.png')
 
-ho_wcut = fi.Get("hist_avgfCvsTS_cut_ho_good")
-#ho_wcut.Scale(10.0 / ho_wcut.GetEntries())
-ho_wocut = fi.Get("hist_avgfCvsTS_ho_good")
-ho_wcut.GetXaxis().SetTitle(xaxis)
-ho_wcut.GetYaxis().SetTitle(yaxis)
-ho_wcut.SetTitle(title)
-ho_wocut.GetXaxis().SetTitle(xaxis)
-ho_wocut.GetYaxis().SetTitle(yaxis)
-ho_wocut.SetTitle(title)
-ho_wcut.SetLineColor(wcut_color)
-ho_wocut.SetLineColor(wocut_color)
-leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
-leg.AddEntry(ho_wcut, legend_wcut_label, 'l')
-leg.AddEntry(ho_wocut, legend_wocut_label, 'l')
-ho_wocut.Scale(100.0 / ho_wocut.Integral())
-ho_wcut.Scale(100.0 / ho_wcut.Integral())
+  good = fi.Get('hist_ho_summedfC_soi4_12_414243_cut15_good')
+  bad = fi.Get('hist_ho_summedfC_soi4_12_414243_cut15_bad')
+  good.GetXaxis().SetTitle(xaxis_fC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi4_fC_cut1)
+  good.GetXaxis().SetRange(1, good.GetBin(fC_high))
+  bad.GetXaxis().SetRange(1, bad.GetBin(fC_high))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi4_fC_cut1'+run_num+'.png')
 
-ho_wocut.Draw()
-ho_wcut.Draw('same')
-leg.Draw('same')
-c.SaveAs(run_string+"avgfC_per_TS_compare_1fC_cut"+run_num+".png")
-c.SaveAs(run_string+"avgfC_per_TS_compare_1fC_cut"+run_num+".root")
+  good = fi.Get('hist_ho_summedfC_soi4_12_414243_cut20_good')
+  bad = fi.Get('hist_ho_summedfC_soi4_12_414243_cut20_bad')
+  good = good.Rebin(rebin)
+  bad = bad.Rebin(rebin)
+  good.GetXaxis().SetTitle(xaxis_fC)
+  good.GetYaxis().SetTitle(yaxis)
+  good.SetTitle(title_soi4_fC_cut2)
+  good.GetXaxis().SetRange(1, good.GetBin(fC_veryhigh/rebin))
+  bad.GetXaxis().SetRange(1, bad.GetBin(fC_veryhigh/rebin))
+  good.Scale(1.0 / good.Integral())
+  bad.Scale(1.0 / bad.Integral())
+  good.SetMinimum(low)
+  good.SetMaximum(max(good.GetMaximum(), bad.GetMaximum()) * 1.1)
+  good.SetLineColor(good_color)
+  bad.SetLineColor(bad_color)
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good, good_label, 'l')
+  leg.AddEntry(bad, bad_label, 'l')
+  good.Draw('hist')
+  bad.Draw('hist same')
+  leg.Draw('same')
+  c.SaveAs('total_pulse_soi4_fC_cut2'+run_num+'.png')
 
-# total pulse charge plots
-xaxis = 'fC'
-yaxis = 'Scaled to integral 100'
-soi0_title = 'Run '+run+": "+'Total charge in TS 0->3'
-soi4_title = 'Run '+run+": "+'Total charge in TS 2->5'
-good_color = kBlack
-bad_color = kRed
-legend_title = ''
-legend_xi = 0.7
-legend_xf = 0.9
-legend_yi = 0.7
-legend_yf = 0.8
-legend_good_label = 'Good hits'
-legend_bad_label = 'Bad hits'
-low = 0
-high = 12
+  c.SetLogy(0)
 
-ho_soi0_good = fi.Get("hist_totalfC_ho_soi0_good")
-ho_soi0_bad = fi.Get("hist_totalfC_ho_soi0_bad")
-ho_soi0_good.GetXaxis().SetTitle(xaxis)
-ho_soi0_good.GetYaxis().SetTitle(yaxis)
-ho_soi0_good.SetTitle(soi0_title)
-ho_soi0_good.SetLineColor(good_color)
-ho_soi0_bad.GetXaxis().SetTitle(xaxis)
-ho_soi0_bad.GetYaxis().SetTitle(yaxis)
-ho_soi0_bad.SetTitle(soi0_title)
-ho_soi0_bad.SetLineColor(bad_color)
-leg_soi0 = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
-leg_soi0.AddEntry(ho_soi0_good, legend_good_label, 'l')
-leg_soi0.AddEntry(ho_soi0_bad, legend_bad_label, 'l')
-ho_soi4_good = fi.Get("hist_totalfC_ho_soi4_good")
-ho_soi4_bad = fi.Get("hist_totalfC_ho_soi4_bad")
-ho_soi4_good.GetXaxis().SetTitle(xaxis)
-ho_soi4_good.GetYaxis().SetTitle(yaxis)
-ho_soi4_good.SetTitle(soi4_title)
-ho_soi4_good.SetLineColor(good_color)
-ho_soi4_bad.GetXaxis().SetTitle(xaxis)
-ho_soi4_bad.GetYaxis().SetTitle(yaxis)
-ho_soi4_bad.SetTitle(soi4_title)
-ho_soi4_bad.SetLineColor(bad_color)
-leg_soi4 = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
-leg_soi4.AddEntry(ho_soi4_good, legend_good_label, 'l')
-leg_soi4.AddEntry(ho_soi4_bad, legend_bad_label, 'l')
-ho_soi0_good.Scale(100.0/ho_soi0_good.Integral())
-ho_soi0_bad.Scale(100.0/ho_soi0_bad.Integral())
-ho_soi4_good.Scale(100.0/ho_soi4_good.Integral())
-ho_soi4_bad.Scale(100.0/ho_soi4_bad.Integral())
-ho_soi0_good.SetMinimum(low)
-ho_soi0_good.SetMaximum(high)
-ho_soi0_bad.SetMinimum(low)
-ho_soi0_bad.SetMaximum(high)
-ho_soi4_good.SetMinimum(low)
-ho_soi4_good.SetMaximum(high)
-ho_soi4_bad.SetMinimum(low)
-ho_soi4_bad.SetMaximum(high)
 
-ho_soi0_bad.Draw('hist')
-ho_soi0_good.Draw('hist same')
-leg_soi0.Draw('same')
-c.SaveAs(run_string+"total_pulse_charge_soi0"+run_num+".png")
-c.SaveAs(run_string+"total_pulse_charge_soi0"+run_num+".root")
+# avg with many lines
+if True:
+  xaxis = 'TS'
+  yaxis_ADC = 'ADC'
+  yaxis_fC = 'fC'
 
-ho_soi4_bad.Draw('hist')
-ho_soi4_good.Draw('hist same')
-leg_soi4.Draw('same')
-c.SaveAs(run_string+"total_pulse_charge_soi4"+run_num+".png")
-c.SaveAs(run_string+"total_pulse_charge_soi4"+run_num+".root")
+  cut0_ADC_low = 8.5
+  cut0_ADC_high = 11
+  cut1_ADC_low = 8.5
+  cut1_ADC_high = 11
+  cut2_ADC_low = 8.5
+  cut2_ADC_high = 16
 
-# total charge all pulses included
-xaxis = 'fC'
-yaxis = 'Scaled to integral 100'
-title = 'Run '+run+": "+'Total charge in TS'
-legend_title = ''
-legend_xi = 0.8
-legend_xf = 0.9
-legend_yi = 0.5
-legend_yf = 0.8
-legend_ts0_label = 'TS 0'
-legend_ts1_label = 'TS 1'
-legend_ts2_label = 'TS 2'
-legend_ts3_label = 'TS 3'
-legend_ts4_label = 'TS 4'
-legend_ts5_label = 'TS 5'
-legend_ts6_label = 'TS 6'
-legend_ts7_label = 'TS 7'
-legend_ts8_label = 'TS 8'
-legend_ts9_label = 'TS 9'
-low = 0
-high = 700000
+  cut0_fC_low = 0
+  cut0_fC_high = 6
+  cut1_fC_low = 0
+  cut1_fC_high = 6
+  cut2_fC_low = 0
+  cut2_fC_high = 30
 
-ts0 = fi.Get("hist_totalfC_ho_TS0")
-ts1 = fi.Get("hist_totalfC_ho_TS1")
-ts2 = fi.Get("hist_totalfC_ho_TS2")
-ts3 = fi.Get("hist_totalfC_ho_TS3")
-ts4 = fi.Get("hist_totalfC_ho_TS4")
-ts5 = fi.Get("hist_totalfC_ho_TS5")
-ts6 = fi.Get("hist_totalfC_ho_TS6")
-ts7 = fi.Get("hist_totalfC_ho_TS7")
-ts8 = fi.Get("hist_totalfC_ho_TS8")
-ts9 = fi.Get("hist_totalfC_ho_TS9")
-ts_hists = []
-ts_hists.append(ts0)
-ts_hists.append(ts1)
-ts_hists.append(ts2)
-ts_hists.append(ts3)
-ts_hists.append(ts4)
-ts_hists.append(ts5)
-ts_hists.append(ts6)
-ts_hists.append(ts7)
-ts_hists.append(ts8)
-ts_hists.append(ts9)
-for hist in ts_hists:
+  ho_title_ADC = 'HO, average ADC in bad channels only'
+  ho_title_fC = 'HO, average fC in bad channels only'
+  ho_cut0_title_ADC = run_string+ho_title_ADC+''
+  ho_cut1_title_ADC = run_string+ho_title_ADC+', cut at 1'
+  ho_cut2_title_ADC = run_string+ho_title_ADC+', cut at 2'
+  ho_cut0_title_fC = run_string+ho_title_fC+''
+  ho_cut1_title_fC = run_string+ho_title_fC+', cut at 1'
+  ho_cut2_title_fC = run_string+ho_title_fC+', cut at 2'
+
+  color_40 = kBlue
+  color_44 = kBlue
+  color_41_good = kBlack
+  color_41_bad = kRed
+  color_42_good = kBlack
+  color_42_bad = kRed
+  color_43_good = kBlack
+  color_43_bad = kRed
+
+  legend_title = ''
+  legend_xi = 0.75
+  legend_xf = 0.9
+  legend_yi = 0.7
+  legend_yf = 0.9
+  legend_40_label = 'iEta 12, iPhi 40'
+  legend_44_label = 'iEta 12, iPhi 44'
+  legend_41_good_label = 'iEta 12, iPhi 41, good hits'
+  legend_41_bad_label = 'iEta 12, iPhi 41, bad hits'
+  legend_42_good_label = 'iEta 12, iPhi 42, good hits'
+  legend_42_bad_label = 'iEta 12, iPhi 42, bad hits'
+  legend_43_good_label = 'iEta 12, iPhi 43, good hits'
+  legend_43_bad_label = 'iEta 12, iPhi 43. bad hits'
+
+  ho_cut0_ADC_40 = fi.Get('hist_ho_totADCinTS_nocut_12_40')
+  ho_cut0_ADC_44 = fi.Get('hist_ho_totADCinTS_nocut_12_44')
+  ho_cut0_ADC_41_good = fi.Get('hist_ho_totADCinTS_nocut_12_41_good')
+  ho_cut0_ADC_41_bad = fi.Get('hist_ho_totADCinTS_nocut_12_41_bad')
+  ho_cut0_ADC_42_good = fi.Get('hist_ho_totADCinTS_nocut_12_42_good')
+  ho_cut0_ADC_42_bad = fi.Get('hist_ho_totADCinTS_nocut_12_42_bad')
+  ho_cut0_ADC_43_good = fi.Get('hist_ho_totADCinTS_nocut_12_43_good')
+  ho_cut0_ADC_43_bad = fi.Get('hist_ho_totADCinTS_nocut_12_43_bad')
+
+  ho_cut0_ADC_40.SetLineColor(color_40)
+  ho_cut0_ADC_44.SetLineColor(color_44)
+  ho_cut0_ADC_41_good.SetLineColor(color_41_good)
+  ho_cut0_ADC_41_bad.SetLineColor(color_41_bad)
+  ho_cut0_ADC_42_good.SetLineColor(color_42_good)
+  ho_cut0_ADC_42_bad.SetLineColor(color_42_bad)
+  ho_cut0_ADC_43_good.SetLineColor(color_43_good)
+  ho_cut0_ADC_43_bad.SetLineColor(color_43_bad)
+
+  ho_cut0_ADC_40.Scale(10.0 / ho_cut0_ADC_40.GetEntries() )
+  ho_cut0_ADC_44.Scale(10.0 / ho_cut0_ADC_44.GetEntries() )
+  ho_cut0_ADC_41_good.Scale(10.0 / ho_cut0_ADC_41_good.GetEntries() )
+  ho_cut0_ADC_41_bad.Scale(10.0 / ho_cut0_ADC_41_bad.GetEntries() )
+  ho_cut0_ADC_42_good.Scale(10.0 / ho_cut0_ADC_42_good.GetEntries() )
+  ho_cut0_ADC_42_bad.Scale(10.0 / ho_cut0_ADC_42_bad.GetEntries() )
+  ho_cut0_ADC_43_good.Scale(10.0 / ho_cut0_ADC_43_good.GetEntries() )
+  ho_cut0_ADC_43_bad.Scale(10.0 / ho_cut0_ADC_43_bad.GetEntries() )
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(ho_cut0_ADC_40, legend_40_label, 'l')
+  leg.AddEntry(ho_cut0_ADC_41_good, legend_41_good_label, 'l')
+  leg.AddEntry(ho_cut0_ADC_42_good, legend_42_good_label, 'l')
+  leg.AddEntry(ho_cut0_ADC_43_good, legend_43_good_label, 'l')
+  leg.AddEntry(ho_cut0_ADC_41_bad, legend_41_bad_label, 'l')
+  leg.AddEntry(ho_cut0_ADC_42_bad, legend_42_bad_label, 'l')
+  leg.AddEntry(ho_cut0_ADC_43_bad, legend_43_bad_label, 'l')
+  leg.AddEntry(ho_cut0_ADC_44, legend_44_label, 'l')
+
+  ho_cut0_ADC_40.GetXaxis().SetTitle(xaxis)
+  ho_cut0_ADC_40.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut0_ADC_40.SetTitle(ho_cut0_title_ADC)
+  ho_cut0_ADC_40.SetMaximum(cut0_ADC_high)
+  ho_cut0_ADC_40.SetMinimum(cut0_ADC_low)
+  ho_cut0_ADC_40.Draw()
+  ho_cut0_ADC_44.Draw('same')
+  ho_cut0_ADC_41_good.Draw('same')
+  ho_cut0_ADC_41_bad.Draw('same')
+  ho_cut0_ADC_42_good.Draw('same')
+  ho_cut0_ADC_42_bad.Draw('same')
+  ho_cut0_ADC_43_good.Draw('same')
+  ho_cut0_ADC_43_bad.Draw('same')
+  leg.Draw('same')
+
+  c.SaveAs('avgADC_badchannels_compare_cut0'+run_num+'.png')
+
+  ho_cut1_ADC_40 = fi.Get('hist_ho_totADCinTS_cut15_12_40')
+  ho_cut1_ADC_44 = fi.Get('hist_ho_totADCinTS_cut15_12_44')
+  ho_cut1_ADC_41_good = fi.Get('hist_ho_totADCinTS_cut15_12_41_good')
+  ho_cut1_ADC_41_bad = fi.Get('hist_ho_totADCinTS_cut15_12_41_bad')
+  ho_cut1_ADC_42_good = fi.Get('hist_ho_totADCinTS_cut15_12_42_good')
+  ho_cut1_ADC_42_bad = fi.Get('hist_ho_totADCinTS_cut15_12_42_bad')
+  ho_cut1_ADC_43_good = fi.Get('hist_ho_totADCinTS_cut15_12_43_good')
+  ho_cut1_ADC_43_bad = fi.Get('hist_ho_totADCinTS_cut15_12_43_bad')
+
+  ho_cut1_ADC_40.SetLineColor(color_40)
+  ho_cut1_ADC_44.SetLineColor(color_44)
+  ho_cut1_ADC_41_good.SetLineColor(color_41_good)
+  ho_cut1_ADC_41_bad.SetLineColor(color_41_bad)
+  ho_cut1_ADC_42_good.SetLineColor(color_42_good)
+  ho_cut1_ADC_42_bad.SetLineColor(color_42_bad)
+  ho_cut1_ADC_43_good.SetLineColor(color_43_good)
+  ho_cut1_ADC_43_bad.SetLineColor(color_43_bad)
+
+  ho_cut1_ADC_40.Scale(10.0 / ho_cut1_ADC_40.GetEntries() )
+  ho_cut1_ADC_44.Scale(10.0 / ho_cut1_ADC_44.GetEntries() )
+  ho_cut1_ADC_41_good.Scale(10.0 / ho_cut1_ADC_41_good.GetEntries() )
+  ho_cut1_ADC_41_bad.Scale(10.0 / ho_cut1_ADC_41_bad.GetEntries() )
+  ho_cut1_ADC_42_good.Scale(10.0 / ho_cut1_ADC_42_good.GetEntries() )
+  ho_cut1_ADC_42_bad.Scale(10.0 / ho_cut1_ADC_42_bad.GetEntries() )
+  ho_cut1_ADC_43_good.Scale(10.0 / ho_cut1_ADC_43_good.GetEntries() )
+  ho_cut1_ADC_43_bad.Scale(10.0 / ho_cut1_ADC_43_bad.GetEntries() )
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(ho_cut1_ADC_40, legend_40_label, 'l')
+  leg.AddEntry(ho_cut1_ADC_41_good, legend_41_good_label, 'l')
+  leg.AddEntry(ho_cut1_ADC_42_good, legend_42_good_label, 'l')
+  leg.AddEntry(ho_cut1_ADC_43_good, legend_43_good_label, 'l')
+  leg.AddEntry(ho_cut1_ADC_41_bad, legend_41_bad_label, 'l')
+  leg.AddEntry(ho_cut1_ADC_42_bad, legend_42_bad_label, 'l')
+  leg.AddEntry(ho_cut1_ADC_43_bad, legend_43_bad_label, 'l')
+  leg.AddEntry(ho_cut1_ADC_44, legend_44_label, 'l')
+
+  ho_cut1_ADC_40.GetXaxis().SetTitle(xaxis)
+  ho_cut1_ADC_40.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut1_ADC_40.SetTitle(ho_cut1_title_ADC)
+  ho_cut1_ADC_40.SetMaximum(cut1_ADC_high)
+  ho_cut1_ADC_40.SetMinimum(cut1_ADC_low)
+  ho_cut1_ADC_40.Draw()
+  ho_cut1_ADC_44.Draw('same')
+  ho_cut1_ADC_41_good.Draw('same')
+  ho_cut1_ADC_41_bad.Draw('same')
+  ho_cut1_ADC_42_good.Draw('same')
+  ho_cut1_ADC_42_bad.Draw('same')
+  ho_cut1_ADC_43_good.Draw('same')
+  ho_cut1_ADC_43_bad.Draw('same')
+  leg.Draw('same')
+
+  c.SaveAs('avgADC_badchannels_compare_cut1'+run_num+'.png')
+
+  ho_cut2_ADC_40 = fi.Get('hist_ho_totADCinTS_cut20_12_40')
+  ho_cut2_ADC_44 = fi.Get('hist_ho_totADCinTS_cut20_12_44')
+  ho_cut2_ADC_41_good = fi.Get('hist_ho_totADCinTS_cut20_12_41_good')
+  ho_cut2_ADC_41_bad = fi.Get('hist_ho_totADCinTS_cut20_12_41_bad')
+  ho_cut2_ADC_42_good = fi.Get('hist_ho_totADCinTS_cut20_12_42_good')
+  ho_cut2_ADC_42_bad = fi.Get('hist_ho_totADCinTS_cut20_12_42_bad')
+  ho_cut2_ADC_43_good = fi.Get('hist_ho_totADCinTS_cut20_12_43_good')
+  ho_cut2_ADC_43_bad = fi.Get('hist_ho_totADCinTS_cut20_12_43_bad')
+
+  ho_cut2_ADC_40.SetLineColor(color_40)
+  ho_cut2_ADC_44.SetLineColor(color_44)
+  ho_cut2_ADC_41_good.SetLineColor(color_41_good)
+  ho_cut2_ADC_41_bad.SetLineColor(color_41_bad)
+  ho_cut2_ADC_42_good.SetLineColor(color_42_good)
+  ho_cut2_ADC_42_bad.SetLineColor(color_42_bad)
+  ho_cut2_ADC_43_good.SetLineColor(color_43_good)
+  ho_cut2_ADC_43_bad.SetLineColor(color_43_bad)
+
+  ho_cut2_ADC_40.Scale(10.0 / ho_cut2_ADC_40.GetEntries() )
+  ho_cut2_ADC_44.Scale(10.0 / ho_cut2_ADC_44.GetEntries() )
+  ho_cut2_ADC_41_good.Scale(10.0 / ho_cut2_ADC_41_good.GetEntries() )
+  ho_cut2_ADC_41_bad.Scale(10.0 / ho_cut2_ADC_41_bad.GetEntries() )
+  ho_cut2_ADC_42_good.Scale(10.0 / ho_cut2_ADC_42_good.GetEntries() )
+  ho_cut2_ADC_42_bad.Scale(10.0 / ho_cut2_ADC_42_bad.GetEntries() )
+  ho_cut2_ADC_43_good.Scale(10.0 / ho_cut2_ADC_43_good.GetEntries() )
+  ho_cut2_ADC_43_bad.Scale(10.0 / ho_cut2_ADC_43_bad.GetEntries() )
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(ho_cut2_ADC_40, legend_40_label, 'l')
+  leg.AddEntry(ho_cut2_ADC_41_good, legend_41_good_label, 'l')
+  leg.AddEntry(ho_cut2_ADC_42_good, legend_42_good_label, 'l')
+  leg.AddEntry(ho_cut2_ADC_43_good, legend_43_good_label, 'l')
+  leg.AddEntry(ho_cut2_ADC_41_bad, legend_41_bad_label, 'l')
+  leg.AddEntry(ho_cut2_ADC_42_bad, legend_42_bad_label, 'l')
+  leg.AddEntry(ho_cut2_ADC_43_bad, legend_43_bad_label, 'l')
+  leg.AddEntry(ho_cut2_ADC_44, legend_44_label, 'l')
+
+  ho_cut2_ADC_40.GetXaxis().SetTitle(xaxis)
+  ho_cut2_ADC_40.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut2_ADC_40.SetTitle(ho_cut2_title_ADC)
+  ho_cut2_ADC_40.SetMaximum(cut2_ADC_high)
+  ho_cut2_ADC_40.SetMinimum(cut2_ADC_low)
+  ho_cut2_ADC_40.Draw()
+  ho_cut2_ADC_44.Draw('same')
+  ho_cut2_ADC_41_good.Draw('same')
+  ho_cut2_ADC_41_bad.Draw('same')
+  ho_cut2_ADC_42_good.Draw('same')
+  ho_cut2_ADC_42_bad.Draw('same')
+  ho_cut2_ADC_43_good.Draw('same')
+  ho_cut2_ADC_43_bad.Draw('same')
+  leg.Draw('same')
+
+  c.SaveAs('avgADC_badchannels_compare_cut2'+run_num+'.png')
+
+  ho_cut0_fC_40 = fi.Get('hist_ho_totfCinTS_nocut_12_40')
+  ho_cut0_fC_44 = fi.Get('hist_ho_totfCinTS_nocut_12_44')
+  ho_cut0_fC_41_good = fi.Get('hist_ho_totfCinTS_nocut_12_41_good')
+  ho_cut0_fC_41_bad = fi.Get('hist_ho_totfCinTS_nocut_12_41_bad')
+  ho_cut0_fC_42_good = fi.Get('hist_ho_totfCinTS_nocut_12_42_good')
+  ho_cut0_fC_42_bad = fi.Get('hist_ho_totfCinTS_nocut_12_42_bad')
+  ho_cut0_fC_43_good = fi.Get('hist_ho_totfCinTS_nocut_12_43_good')
+  ho_cut0_fC_43_bad = fi.Get('hist_ho_totfCinTS_nocut_12_43_bad')
+
+  ho_cut0_fC_40.SetLineColor(color_40)
+  ho_cut0_fC_44.SetLineColor(color_44)
+  ho_cut0_fC_41_good.SetLineColor(color_41_good)
+  ho_cut0_fC_41_bad.SetLineColor(color_41_bad)
+  ho_cut0_fC_42_good.SetLineColor(color_42_good)
+  ho_cut0_fC_42_bad.SetLineColor(color_42_bad)
+  ho_cut0_fC_43_good.SetLineColor(color_43_good)
+  ho_cut0_fC_43_bad.SetLineColor(color_43_bad)
+
+  ho_cut0_fC_40.Scale(10.0 / ho_cut0_fC_40.GetEntries() )
+  ho_cut0_fC_44.Scale(10.0 / ho_cut0_fC_44.GetEntries() )
+  ho_cut0_fC_41_good.Scale(10.0 / ho_cut0_fC_41_good.GetEntries() )
+  ho_cut0_fC_41_bad.Scale(10.0 / ho_cut0_fC_41_bad.GetEntries() )
+  ho_cut0_fC_42_good.Scale(10.0 / ho_cut0_fC_42_good.GetEntries() )
+  ho_cut0_fC_42_bad.Scale(10.0 / ho_cut0_fC_42_bad.GetEntries() )
+  ho_cut0_fC_43_good.Scale(10.0 / ho_cut0_fC_43_good.GetEntries() )
+  ho_cut0_fC_43_bad.Scale(10.0 / ho_cut0_fC_43_bad.GetEntries() )
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(ho_cut0_fC_40, legend_40_label, 'l')
+  leg.AddEntry(ho_cut0_fC_41_good, legend_41_good_label, 'l')
+  leg.AddEntry(ho_cut0_fC_42_good, legend_42_good_label, 'l')
+  leg.AddEntry(ho_cut0_fC_43_good, legend_43_good_label, 'l')
+  leg.AddEntry(ho_cut0_fC_41_bad, legend_41_bad_label, 'l')
+  leg.AddEntry(ho_cut0_fC_42_bad, legend_42_bad_label, 'l')
+  leg.AddEntry(ho_cut0_fC_43_bad, legend_43_bad_label, 'l')
+  leg.AddEntry(ho_cut0_fC_44, legend_44_label, 'l')
+
+  ho_cut0_fC_40.GetXaxis().SetTitle(xaxis)
+  ho_cut0_fC_40.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut0_fC_40.SetTitle(ho_cut0_title_fC)
+  ho_cut0_fC_40.SetMaximum(cut0_fC_high)
+  ho_cut0_fC_40.SetMinimum(cut0_fC_low)
+  ho_cut0_fC_40.Draw()
+  ho_cut0_fC_44.Draw('same')
+  ho_cut0_fC_41_good.Draw('same')
+  ho_cut0_fC_41_bad.Draw('same')
+  ho_cut0_fC_42_good.Draw('same')
+  ho_cut0_fC_42_bad.Draw('same')
+  ho_cut0_fC_43_good.Draw('same')
+  ho_cut0_fC_43_bad.Draw('same')
+  leg.Draw('same')
+
+  c.SaveAs('avgfC_badchannels_compare_cut0'+run_num+'.png')
+
+  ho_cut1_fC_40 = fi.Get('hist_ho_totfCinTS_cut15_12_40')
+  ho_cut1_fC_44 = fi.Get('hist_ho_totfCinTS_cut15_12_44')
+  ho_cut1_fC_41_good = fi.Get('hist_ho_totfCinTS_cut15_12_41_good')
+  ho_cut1_fC_41_bad = fi.Get('hist_ho_totfCinTS_cut15_12_41_bad')
+  ho_cut1_fC_42_good = fi.Get('hist_ho_totfCinTS_cut15_12_42_good')
+  ho_cut1_fC_42_bad = fi.Get('hist_ho_totfCinTS_cut15_12_42_bad')
+  ho_cut1_fC_43_good = fi.Get('hist_ho_totfCinTS_cut15_12_43_good')
+  ho_cut1_fC_43_bad = fi.Get('hist_ho_totfCinTS_cut15_12_43_bad')
+
+  ho_cut1_fC_40.SetLineColor(color_40)
+  ho_cut1_fC_44.SetLineColor(color_44)
+  ho_cut1_fC_41_good.SetLineColor(color_41_good)
+  ho_cut1_fC_41_bad.SetLineColor(color_41_bad)
+  ho_cut1_fC_42_good.SetLineColor(color_42_good)
+  ho_cut1_fC_42_bad.SetLineColor(color_42_bad)
+  ho_cut1_fC_43_good.SetLineColor(color_43_good)
+  ho_cut1_fC_43_bad.SetLineColor(color_43_bad)
+
+  ho_cut1_fC_40.Scale(10.0 / ho_cut1_fC_40.GetEntries() )
+  ho_cut1_fC_44.Scale(10.0 / ho_cut1_fC_44.GetEntries() )
+  ho_cut1_fC_41_good.Scale(10.0 / ho_cut1_fC_41_good.GetEntries() )
+  ho_cut1_fC_41_bad.Scale(10.0 / ho_cut1_fC_41_bad.GetEntries() )
+  ho_cut1_fC_42_good.Scale(10.0 / ho_cut1_fC_42_good.GetEntries() )
+  ho_cut1_fC_42_bad.Scale(10.0 / ho_cut1_fC_42_bad.GetEntries() )
+  ho_cut1_fC_43_good.Scale(10.0 / ho_cut1_fC_43_good.GetEntries() )
+  ho_cut1_fC_43_bad.Scale(10.0 / ho_cut1_fC_43_bad.GetEntries() )
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(ho_cut1_fC_40, legend_40_label, 'l')
+  leg.AddEntry(ho_cut1_fC_41_good, legend_41_good_label, 'l')
+  leg.AddEntry(ho_cut1_fC_42_good, legend_42_good_label, 'l')
+  leg.AddEntry(ho_cut1_fC_43_good, legend_43_good_label, 'l')
+  leg.AddEntry(ho_cut1_fC_41_bad, legend_41_bad_label, 'l')
+  leg.AddEntry(ho_cut1_fC_42_bad, legend_42_bad_label, 'l')
+  leg.AddEntry(ho_cut1_fC_43_bad, legend_43_bad_label, 'l')
+  leg.AddEntry(ho_cut1_fC_44, legend_44_label, 'l')
+
+  ho_cut1_fC_40.GetXaxis().SetTitle(xaxis)
+  ho_cut1_fC_40.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut1_fC_40.SetTitle(ho_cut1_title_fC)
+  ho_cut1_fC_40.SetMaximum(cut1_fC_high)
+  ho_cut1_fC_40.SetMinimum(cut1_fC_low)
+  ho_cut1_fC_40.Draw()
+  ho_cut1_fC_44.Draw('same')
+  ho_cut1_fC_41_good.Draw('same')
+  ho_cut1_fC_41_bad.Draw('same')
+  ho_cut1_fC_42_good.Draw('same')
+  ho_cut1_fC_42_bad.Draw('same')
+  ho_cut1_fC_43_good.Draw('same')
+  ho_cut1_fC_43_bad.Draw('same')
+  leg.Draw('same')
+
+  c.SaveAs('avgfC_badchannels_compare_cut1'+run_num+'.png')
+
+  ho_cut2_fC_40 = fi.Get('hist_ho_totfCinTS_cut20_12_40')
+  ho_cut2_fC_44 = fi.Get('hist_ho_totfCinTS_cut20_12_44')
+  ho_cut2_fC_41_good = fi.Get('hist_ho_totfCinTS_cut20_12_41_good')
+  ho_cut2_fC_41_bad = fi.Get('hist_ho_totfCinTS_cut20_12_41_bad')
+  ho_cut2_fC_42_good = fi.Get('hist_ho_totfCinTS_cut20_12_42_good')
+  ho_cut2_fC_42_bad = fi.Get('hist_ho_totfCinTS_cut20_12_42_bad')
+  ho_cut2_fC_43_good = fi.Get('hist_ho_totfCinTS_cut20_12_43_good')
+  ho_cut2_fC_43_bad = fi.Get('hist_ho_totfCinTS_cut20_12_43_bad')
+
+  ho_cut2_fC_40.SetLineColor(color_40)
+  ho_cut2_fC_44.SetLineColor(color_44)
+  ho_cut2_fC_41_good.SetLineColor(color_41_good)
+  ho_cut2_fC_41_bad.SetLineColor(color_41_bad)
+  ho_cut2_fC_42_good.SetLineColor(color_42_good)
+  ho_cut2_fC_42_bad.SetLineColor(color_42_bad)
+  ho_cut2_fC_43_good.SetLineColor(color_43_good)
+  ho_cut2_fC_43_bad.SetLineColor(color_43_bad)
+
+  ho_cut2_fC_40.Scale(10.0 / ho_cut2_fC_40.GetEntries() )
+  ho_cut2_fC_44.Scale(10.0 / ho_cut2_fC_44.GetEntries() )
+  ho_cut2_fC_41_good.Scale(10.0 / ho_cut2_fC_41_good.GetEntries() )
+  ho_cut2_fC_41_bad.Scale(10.0 / ho_cut2_fC_41_bad.GetEntries() )
+  ho_cut2_fC_42_good.Scale(10.0 / ho_cut2_fC_42_good.GetEntries() )
+  ho_cut2_fC_42_bad.Scale(10.0 / ho_cut2_fC_42_bad.GetEntries() )
+  ho_cut2_fC_43_good.Scale(10.0 / ho_cut2_fC_43_good.GetEntries() )
+  ho_cut2_fC_43_bad.Scale(10.0 / ho_cut2_fC_43_bad.GetEntries() )
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(ho_cut2_fC_40, legend_40_label, 'l')
+  leg.AddEntry(ho_cut2_fC_41_good, legend_41_good_label, 'l')
+  leg.AddEntry(ho_cut2_fC_42_good, legend_42_good_label, 'l')
+  leg.AddEntry(ho_cut2_fC_43_good, legend_43_good_label, 'l')
+  leg.AddEntry(ho_cut2_fC_41_bad, legend_41_bad_label, 'l')
+  leg.AddEntry(ho_cut2_fC_42_bad, legend_42_bad_label, 'l')
+  leg.AddEntry(ho_cut2_fC_43_bad, legend_43_bad_label, 'l')
+  leg.AddEntry(ho_cut2_fC_44, legend_44_label, 'l')
+
+  ho_cut2_fC_40.GetXaxis().SetTitle(xaxis)
+  ho_cut2_fC_40.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut2_fC_40.SetTitle(ho_cut2_title_fC)
+  ho_cut2_fC_40.SetMaximum(cut2_fC_high)
+  ho_cut2_fC_40.SetMinimum(cut2_fC_low)
+  ho_cut2_fC_40.Draw()
+  ho_cut2_fC_44.Draw('same')
+  ho_cut2_fC_41_good.Draw('same')
+  ho_cut2_fC_41_bad.Draw('same')
+  ho_cut2_fC_42_good.Draw('same')
+  ho_cut2_fC_42_bad.Draw('same')
+  ho_cut2_fC_43_good.Draw('same')
+  ho_cut2_fC_43_bad.Draw('same')
+  leg.Draw('same')
+
+  c.SaveAs('avgfC_badchannels_compare_cut2'+run_num+'.png')
+
+
+# 2d full dsitribution plots
+if True:
+  xaxis = 'TS'
+  yaxis_ADC = 'ADC'
+  yaxis_fC = 'fC'
+  ho_title_cut0_ADC = run_string+'HO, ADC full distribution'
+  ho_title_cut1_ADC = run_string+'HO, ADC full distribution, cut 1'
+  ho_title_cut2_ADC = run_string+'HO, ADC full distribution, cut 2'
+  hb_title_cut0_ADC = run_string+'HB, ADC full distribution'
+  hb_title_cut1_ADC = run_string+'HB, ADC full distribution, cut 1'
+  hb_title_cut2_ADC = run_string+'HB, ADC full distribution, cut 2'
+  he_title_cut0_ADC = run_string+'HE, ADC full distribution'
+  he_title_cut1_ADC = run_string+'HE, ADC full distribution, cut 1'
+  he_title_cut2_ADC = run_string+'HE, ADC full distribution, cut 2'
+  ho_title_cut0_fC = run_string+'HO, fC full distribution'
+  ho_title_cut1_fC = run_string+'HO, fC full distribution, cut 1'
+  ho_title_cut2_fC = run_string+'HO, fC full distribution, cut 2'
+  hb_title_cut0_fC = run_string+'HB, fC full distribution'
+  hb_title_cut1_fC = run_string+'HB, fC full distribution, cut 1'
+  hb_title_cut2_fC = run_string+'HB, fC full distribution, cut 2'
+  he_title_cut0_fC = run_string+'HE, fC full distribution'
+  he_title_cut1_fC = run_string+'HE, fC full distribution, cut 1'
+  he_title_cut2_fC = run_string+'HE, fC full distribution, cut 2'
+
+  he_high_ADC = 200
+  hb_high_ADC = 200
+  ho_high_ADC = 200
+  he_high_fC = 100
+  hb_high_fC = 100
+  ho_high_fC = 100
+
+  he_cut0_ADC = fi.Get('hist_he_allADCinTS_nocut')
+  he_cut1_ADC = fi.Get('hist_he_allADCinTS_cut10')
+  he_cut2_ADC = fi.Get('hist_he_allADCinTS_cut15')
+
+  ho_cut0_ADC = fi.Get('hist_ho_allADCinTS_nocut')
+  ho_cut1_ADC = fi.Get('hist_ho_allADCinTS_cut15')
+  ho_cut2_ADC = fi.Get('hist_ho_allADCinTS_cut20')
+
+  hb_cut0_ADC = fi.Get('hist_hb_allADCinTS_nocut')
+  hb_cut1_ADC = fi.Get('hist_hb_allADCinTS_cut5')
+  hb_cut2_ADC = fi.Get('hist_hb_allADCinTS_cut8')
+
+  he_cut0_fC = fi.Get('hist_he_allfCinTS_nocut')
+  he_cut1_fC = fi.Get('hist_he_allfCinTS_cut10')
+  he_cut2_fC = fi.Get('hist_he_allfCinTS_cut15')
+
+  ho_cut0_fC = fi.Get('hist_ho_allfCinTS_nocut')
+  ho_cut1_fC = fi.Get('hist_ho_allfCinTS_cut15')
+  ho_cut2_fC = fi.Get('hist_ho_allfCinTS_cut20')
+
+  hb_cut0_fC = fi.Get('hist_hb_allfCinTS_nocut')
+  hb_cut1_fC = fi.Get('hist_hb_allfCinTS_cut5')
+  hb_cut2_fC = fi.Get('hist_hb_allfCinTS_cut8')
+
+  he_cut0_ADC.GetXaxis().SetTitle(xaxis)
+  he_cut0_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  he_cut0_ADC.SetTitle(ho_title_cut0_ADC)
+  he_cut0_ADC.GetYaxis().SetRange(1, he_high_ADC)
+  he_cut0_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_he_cut0_ADC"+run_num+".png")
+  he_cut0_ADC.Write()
+
+  he_cut1_ADC.GetXaxis().SetTitle(xaxis)
+  he_cut1_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  he_cut1_ADC.SetTitle(ho_title_cut1_ADC)
+  he_cut1_ADC.GetYaxis().SetRange(1, he_high_ADC)
+  he_cut1_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_he_cut1_ADC"+run_num+".png")
+  he_cut1_ADC.Write()
+
+  he_cut2_ADC.GetXaxis().SetTitle(xaxis)
+  he_cut2_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  he_cut2_ADC.SetTitle(ho_title_cut2_ADC)
+  he_cut2_ADC.GetYaxis().SetRange(1, he_high_ADC)
+  he_cut2_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_he_cut2_ADC"+run_num+".png")
+  he_cut2_ADC.Write()
+
+  hb_cut0_ADC.GetXaxis().SetTitle(xaxis)
+  hb_cut0_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  hb_cut0_ADC.SetTitle(ho_title_cut0_ADC)
+  hb_cut0_ADC.GetYaxis().SetRange(1, hb_high_ADC)
+  hb_cut0_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_hb_cut0_ADC"+run_num+".png")
+  hb_cut0_ADC.Write()
+
+  hb_cut1_ADC.GetXaxis().SetTitle(xaxis)
+  hb_cut1_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  hb_cut1_ADC.SetTitle(ho_title_cut1_ADC)
+  hb_cut1_ADC.GetYaxis().SetRange(1, hb_high_ADC)
+  hb_cut1_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_hb_cut1_ADC"+run_num+".png")
+  hb_cut1_ADC.Write()
+
+  hb_cut2_ADC.GetXaxis().SetTitle(xaxis)
+  hb_cut2_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  hb_cut2_ADC.SetTitle(ho_title_cut2_ADC)
+  hb_cut2_ADC.GetYaxis().SetRange(1, hb_high_ADC)
+  hb_cut2_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_hb_cut2_ADC"+run_num+".png")
+  hb_cut2_ADC.Write()
+
+  ho_cut0_ADC.GetXaxis().SetTitle(xaxis)
+  ho_cut0_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut0_ADC.SetTitle(ho_title_cut0_ADC)
+  ho_cut0_ADC.GetYaxis().SetRange(1, ho_high_ADC)
+  ho_cut0_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_ho_cut0_ADC"+run_num+".png")
+  ho_cut0_ADC.Write()
+
+  ho_cut1_ADC.GetXaxis().SetTitle(xaxis)
+  ho_cut1_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut1_ADC.SetTitle(ho_title_cut1_ADC)
+  ho_cut1_ADC.GetYaxis().SetRange(1, ho_high_ADC)
+  ho_cut1_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_ho_cut1_ADC"+run_num+".png")
+  ho_cut1_ADC.Write()
+
+  ho_cut2_ADC.GetXaxis().SetTitle(xaxis)
+  ho_cut2_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut2_ADC.SetTitle(ho_title_cut2_ADC)
+  ho_cut2_ADC.GetYaxis().SetRange(1, ho_high_ADC)
+  ho_cut2_ADC.Draw('Colz')
+  c.SaveAs("2d_fulldist_ho_cut2_ADC"+run_num+".png")
+  ho_cut2_ADC.Write()
+
+  he_cut0_fC.GetXaxis().SetTitle(xaxis)
+  he_cut0_fC.GetYaxis().SetTitle(yaxis_fC)
+  he_cut0_fC.SetTitle(ho_title_cut0_fC)
+  he_cut0_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_he_cut0_fC"+run_num+".png")
+  he_cut0_fC.Write()
+
+  he_cut1_fC.GetXaxis().SetTitle(xaxis)
+  he_cut1_fC.GetYaxis().SetTitle(yaxis_fC)
+  he_cut1_fC.SetTitle(ho_title_cut1_fC)
+  he_cut1_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_he_cut1_fC"+run_num+".png")
+  he_cut1_fC.Write()
+
+  he_cut2_fC.GetXaxis().SetTitle(xaxis)
+  he_cut2_fC.GetYaxis().SetTitle(yaxis_fC)
+  he_cut2_fC.SetTitle(ho_title_cut2_fC)
+  he_cut2_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_he_cut2_fC"+run_num+".png")
+  he_cut2_fC.Write()
+
+  hb_cut0_fC.GetXaxis().SetTitle(xaxis)
+  hb_cut0_fC.GetYaxis().SetTitle(yaxis_fC)
+  hb_cut0_fC.SetTitle(ho_title_cut0_fC)
+  hb_cut0_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_hb_cut0_fC"+run_num+".png")
+  hb_cut0_fC.Write()
+
+  hb_cut1_fC.GetXaxis().SetTitle(xaxis)
+  hb_cut1_fC.GetYaxis().SetTitle(yaxis_fC)
+  hb_cut1_fC.SetTitle(ho_title_cut1_fC)
+  hb_cut1_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_hb_cut1_fC"+run_num+".png")
+  hb_cut1_fC.Write()
+
+  hb_cut2_fC.GetXaxis().SetTitle(xaxis)
+  hb_cut2_fC.GetYaxis().SetTitle(yaxis_fC)
+  hb_cut2_fC.SetTitle(ho_title_cut2_fC)
+  hb_cut2_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_hb_cut2_fC"+run_num+".png")
+  hb_cut2_fC.Write()
+
+  ho_cut0_fC.GetXaxis().SetTitle(xaxis)
+  ho_cut0_fC.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut0_fC.SetTitle(ho_title_cut0_fC)
+  ho_cut0_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_ho_cut0_fC"+run_num+".png")
+  ho_cut0_fC.Write()
+
+  ho_cut1_fC.GetXaxis().SetTitle(xaxis)
+  ho_cut1_fC.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut1_fC.SetTitle(ho_title_cut1_fC)
+  ho_cut1_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_ho_cut1_fC"+run_num+".png")
+  ho_cut1_fC.Write()
+
+  ho_cut2_fC.GetXaxis().SetTitle(xaxis)
+  ho_cut2_fC.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut2_fC.SetTitle(ho_title_cut2_fC)
+  ho_cut2_fC.Draw('Colz')
+  c.SaveAs("2d_fulldist_ho_cut2_fC"+run_num+".png")
+  ho_cut2_fC.Write()
+
+# percent bad per LS
+if True:
+  xaxis = 'LS' 
+  yaxis = '% bad hits'
+  title = run_string+'precentage of bad hits across all three channels'
+
+  numer = fi.Get('hist_ho_numbadperls')
+  denom = fi.Get('hist_ho_numtotperls')
+
+  numer.Divide(denom)
+  numer.GetXaxis().SetTitle(xaxis)
+  numer.GetYaxis().SetTitle(yaxis)
+  numer.GetXaxis().SetRange(LS_low, LS_high)
+  numer.SetTitle(title)
+  numer.Draw('][')
+  c.SaveAs("percentage_bad"+run_num+".png")
+  numer.Write()
+
+# ieta vs iphi bad hits
+if True:
+  xaxis = 'iEta' 
+  yaxis = 'iPhi'
+  title = run_string+'Location of bad hits'
+
+  hist = fi.Get('hist_ho_badhits_etaphi')
+
   hist.GetXaxis().SetTitle(xaxis)
   hist.GetYaxis().SetTitle(yaxis)
   hist.SetTitle(title)
-  if not hist.Integral() == 0: hist.Scale( 100.0 / hist.Integral() )
+  hist.Draw('Colz')
+  c.SaveAs("ieta_vs_iphi_locbad"+run_num+".png")
+  hist.Write()
 
-ts0.SetLineColor(92)
-ts1.SetLineColor(94)
-ts2.SetLineColor(96)
-ts3.SetLineColor(99)
-ts4.SetLineColor(2)
-ts5.SetLineColor(52)
-ts6.SetLineColor(54)
-ts7.SetLineColor(56)
-ts8.SetLineColor(58)
-ts9.SetLineColor(60)
+# average in TS
+if True:
+  xaxis = 'TS'
+  yaxis_ADC = 'avg ADC'
+  yaxis_fC = 'avg fC'
+  ho_title_ADC = run_string+'HO, averge ADC per TS in pulse'
+  ho_title_fC = run_string+'HO, averge fC per TS in pulse'
+  he_title_ADC = run_string+'HE, averge ADC per TS in pulse'
+  he_title_fC = run_string+'HE, averge fC per TS in pulse'
+  hb_title_ADC = run_string+'HB, averge ADC per TS in pulse'
+  hb_title_fC = run_string+'HB, averge fC per TS in pulse'
+  ho_high = 20
+  he_high_ADC = 50
+  he_high_fC = 1400
+  hb_high = 20
+  legend_title = ''
+  legend_xi = 0.7
+  legend_xf = 0.9
+  legend_yi = 0.7
+  legend_yf = 0.8
+  legend_cut0_label = 'cut 0'
+  legend_cut1_label = 'cut 1'
+  legend_cut2_label = 'cut 2'
+  cut0_color = kViolet
+  cut1_color = kGreen
+  cut2_color = kBlue
 
-leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
-leg.AddEntry(ts0, legend_ts0_label, 'l')
-leg.AddEntry(ts1, legend_ts1_label, 'l')
-leg.AddEntry(ts2, legend_ts2_label, 'l')
-leg.AddEntry(ts3, legend_ts3_label, 'l')
-leg.AddEntry(ts4, legend_ts4_label, 'l')
-leg.AddEntry(ts5, legend_ts5_label, 'l')
-leg.AddEntry(ts6, legend_ts6_label, 'l')
-leg.AddEntry(ts7, legend_ts7_label, 'l')
-leg.AddEntry(ts8, legend_ts8_label, 'l')
-leg.AddEntry(ts9, legend_ts9_label, 'l')
+  ho_cut0_ADC = fi.Get('hist_ho_totADCinTS_nocut')
+  ho_cut0_ADC.Scale(10.0 / ho_cut0_ADC.GetEntries() )
+  ho_cut0_ADC.GetXaxis().SetTitle(xaxis)
+  ho_cut0_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut0_ADC.SetTitle(ho_title_ADC)
+  ho_cut0_ADC.SetMinimum(0)
+  ho_cut0_ADC.SetMaximum(ho_high)
+  ho_cut0_ADC.SetLineColor(cut0_color)
+  ho_cut0_ADC.Draw('')
 
-ts9.SetMinimum(low)
+  ho_cut1_ADC = fi.Get('hist_ho_totADCinTS_cut15')
+  ho_cut1_ADC.Scale(10.0 / ho_cut1_ADC.GetEntries() )
+  ho_cut1_ADC.GetXaxis().SetTitle(xaxis)
+  ho_cut1_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut1_ADC.SetTitle(ho_title_ADC)
+  ho_cut1_ADC.SetLineColor(cut1_color)
+  ho_cut1_ADC.Draw('same')
 
-ts0.Draw('hist')
-ts9.Draw('hist same')
-ts1.Draw('hist same')
-ts2.Draw('hist same')
-ts3.Draw('hist same')
-ts4.Draw('hist same')
-ts5.Draw('hist same')
-ts6.Draw('hist same')
-ts7.Draw('hist same')
-ts8.Draw('hist same')
-leg.Draw('hist same')
-c.SaveAs(run_string+"pulse_all_TS_separate"+run_num+".png")
-c.SaveAs(run_string+"pulse_all_TS_separate"+run_num+".root")
+  ho_cut2_ADC = fi.Get('hist_ho_totADCinTS_cut20')
+  ho_cut2_ADC.Scale(10.0 / ho_cut2_ADC.GetEntries() )
+  ho_cut2_ADC.GetXaxis().SetTitle(xaxis)
+  ho_cut2_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  ho_cut2_ADC.SetTitle(ho_title_ADC)
+  ho_cut2_ADC.SetLineColor(cut2_color)
+  ho_cut2_ADC.Draw('same')
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(ho_cut0_ADC, legend_cut0_label, 'l')
+  leg.AddEntry(ho_cut1_ADC, legend_cut1_label, 'l')
+  leg.AddEntry(ho_cut2_ADC, legend_cut2_label, 'l')
+  leg.Draw('same')
+
+  c.SaveAs("ho_avgADC"+run_num+".png")
+
+  ho_cut0_fC = fi.Get('hist_ho_totfCinTS_nocut')
+  ho_cut0_fC.Scale(10.0 / ho_cut0_fC.GetEntries() )
+  ho_cut0_fC.GetXaxis().SetTitle(xaxis)
+  ho_cut0_fC.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut0_fC.SetTitle(ho_title_fC)
+  ho_cut0_fC.SetMinimum(0)
+  ho_cut0_fC.SetMaximum(ho_high)
+  ho_cut0_fC.SetLineColor(cut0_color)
+  ho_cut0_fC.Draw('')
+
+  ho_cut1_fC = fi.Get('hist_ho_totfCinTS_cut15')
+  ho_cut1_fC.Scale(10.0 / ho_cut1_fC.GetEntries() )
+  ho_cut1_fC.GetXaxis().SetTitle(xaxis)
+  ho_cut1_fC.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut1_fC.SetTitle(ho_title_fC)
+  ho_cut1_fC.SetLineColor(cut1_color)
+  ho_cut1_fC.Draw('same')
+
+  ho_cut2_fC = fi.Get('hist_ho_totfCinTS_cut20')
+  ho_cut2_fC.Scale(10.0 / ho_cut2_fC.GetEntries() )
+  ho_cut2_fC.GetXaxis().SetTitle(xaxis)
+  ho_cut2_fC.GetYaxis().SetTitle(yaxis_fC)
+  ho_cut2_fC.SetTitle(ho_title_fC)
+  ho_cut2_fC.SetLineColor(cut2_color)
+  ho_cut2_fC.Draw('same')
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(ho_cut0_fC, legend_cut0_label, 'l')
+  leg.AddEntry(ho_cut1_fC, legend_cut1_label, 'l')
+  leg.AddEntry(ho_cut2_fC, legend_cut2_label, 'l')
+  leg.Draw('same')
+
+  c.SaveAs("ho_avgfC"+run_num+".png")
+
+  he_cut0_ADC = fi.Get('hist_he_totADCinTS_nocut')
+  he_cut0_ADC.Scale(10.0 / he_cut0_ADC.GetEntries() )
+  he_cut0_ADC.GetXaxis().SetTitle(xaxis)
+  he_cut0_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  he_cut0_ADC.SetTitle(he_title_ADC)
+  he_cut0_ADC.SetMinimum(0)
+  he_cut0_ADC.SetMaximum(he_high_ADC)
+  he_cut0_ADC.SetLineColor(cut0_color)
+  he_cut0_ADC.Draw('')
+
+  he_cut1_ADC = fi.Get('hist_he_totADCinTS_cut10')
+  he_cut1_ADC.Scale(10.0 / he_cut1_ADC.GetEntries() )
+  he_cut1_ADC.GetXaxis().SetTitle(xaxis)
+  he_cut1_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  he_cut1_ADC.SetTitle(he_title_ADC)
+  he_cut1_ADC.SetLineColor(cut1_color)
+  he_cut1_ADC.Draw('same')
+
+  he_cut2_ADC = fi.Get('hist_he_totADCinTS_cut15')
+  he_cut2_ADC.Scale(10.0 / he_cut2_ADC.GetEntries() )
+  he_cut2_ADC.GetXaxis().SetTitle(xaxis)
+  he_cut2_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  he_cut2_ADC.SetTitle(he_title_ADC)
+  he_cut2_ADC.SetLineColor(cut2_color)
+  he_cut2_ADC.Draw('same')
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(he_cut0_ADC, legend_cut0_label, 'l')
+  leg.AddEntry(he_cut1_ADC, legend_cut1_label, 'l')
+  leg.AddEntry(he_cut2_ADC, legend_cut2_label, 'l')
+  leg.Draw('same')
+
+  c.SaveAs("he_avgADC"+run_num+".png")
+
+  he_cut0_fC = fi.Get('hist_he_totfCinTS_nocut')
+  he_cut0_fC.Scale(10.0 / he_cut0_fC.GetEntries() )
+  he_cut0_fC.GetXaxis().SetTitle(xaxis)
+  he_cut0_fC.GetYaxis().SetTitle(yaxis_fC)
+  he_cut0_fC.SetTitle(he_title_fC)
+  he_cut0_fC.SetMinimum(0)
+  he_cut0_fC.SetMaximum(he_high_fC)
+  he_cut0_fC.SetLineColor(cut0_color)
+  he_cut0_fC.Draw('')
+
+  he_cut1_fC = fi.Get('hist_he_totfCinTS_cut10')
+  he_cut1_fC.Scale(10.0 / he_cut1_fC.GetEntries() )
+  he_cut1_fC.GetXaxis().SetTitle(xaxis)
+  he_cut1_fC.GetYaxis().SetTitle(yaxis_fC)
+  he_cut1_fC.SetTitle(he_title_fC)
+  he_cut1_fC.SetLineColor(cut1_color)
+  he_cut1_fC.Draw('same')
+
+  he_cut2_fC = fi.Get('hist_he_totfCinTS_cut15')
+  he_cut2_fC.Scale(10.0 / he_cut2_fC.GetEntries() )
+  he_cut2_fC.GetXaxis().SetTitle(xaxis)
+  he_cut2_fC.GetYaxis().SetTitle(yaxis_fC)
+  he_cut2_fC.SetTitle(he_title_fC)
+  he_cut2_fC.SetLineColor(cut2_color)
+  he_cut2_fC.Draw('same')
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(he_cut0_fC, legend_cut0_label, 'l')
+  leg.AddEntry(he_cut1_fC, legend_cut1_label, 'l')
+  leg.AddEntry(he_cut2_fC, legend_cut2_label, 'l')
+  leg.Draw('same')
+
+  c.SaveAs("he_avgfC"+run_num+".png")
+
+  hb_cut0_ADC = fi.Get('hist_hb_totADCinTS_nocut')
+  hb_cut0_ADC.Scale(10.0 / hb_cut0_ADC.GetEntries() )
+  hb_cut0_ADC.GetXaxis().SetTitle(xaxis)
+  hb_cut0_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  hb_cut0_ADC.SetTitle(hb_title_ADC)
+  hb_cut0_ADC.SetMinimum(0)
+  hb_cut0_ADC.SetMaximum(hb_high)
+  hb_cut0_ADC.SetLineColor(cut0_color)
+  hb_cut0_ADC.Draw('')
+
+  hb_cut1_ADC = fi.Get('hist_hb_totADCinTS_cut5')
+  hb_cut1_ADC.Scale(10.0 / hb_cut1_ADC.GetEntries() )
+  hb_cut1_ADC.GetXaxis().SetTitle(xaxis)
+  hb_cut1_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  hb_cut1_ADC.SetTitle(hb_title_ADC)
+  hb_cut1_ADC.SetLineColor(cut1_color)
+  hb_cut1_ADC.Draw('same')
+
+  hb_cut2_ADC = fi.Get('hist_hb_totADCinTS_cut8')
+  hb_cut2_ADC.Scale(10.0 / hb_cut2_ADC.GetEntries() )
+  hb_cut2_ADC.GetXaxis().SetTitle(xaxis)
+  hb_cut2_ADC.GetYaxis().SetTitle(yaxis_ADC)
+  hb_cut2_ADC.SetTitle(hb_title_ADC)
+  hb_cut2_ADC.SetLineColor(cut2_color)
+  hb_cut2_ADC.Draw('same')
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(hb_cut0_ADC, legend_cut0_label, 'l')
+  leg.AddEntry(hb_cut1_ADC, legend_cut1_label, 'l')
+  leg.AddEntry(hb_cut2_ADC, legend_cut2_label, 'l')
+  leg.Draw('same')
+
+  c.SaveAs("hb_avgADC"+run_num+".png")
+
+  hb_cut0_fC = fi.Get('hist_hb_totfCinTS_nocut')
+  hb_cut0_fC.Scale(10.0 / hb_cut0_fC.GetEntries() )
+  hb_cut0_fC.GetXaxis().SetTitle(xaxis)
+  hb_cut0_fC.GetYaxis().SetTitle(yaxis_fC)
+  hb_cut0_fC.SetTitle(hb_title_fC)
+  hb_cut0_fC.SetMinimum(0)
+  hb_cut0_fC.SetMaximum(hb_high)
+  hb_cut0_fC.SetLineColor(cut0_color)
+  hb_cut0_fC.Draw('')
+
+  hb_cut1_fC = fi.Get('hist_hb_totfCinTS_cut5')
+  hb_cut1_fC.Scale(10.0 / hb_cut1_fC.GetEntries() )
+  hb_cut1_fC.GetXaxis().SetTitle(xaxis)
+  hb_cut1_fC.GetYaxis().SetTitle(yaxis_fC)
+  hb_cut1_fC.SetTitle(hb_title_fC)
+  hb_cut1_fC.SetLineColor(cut1_color)
+  hb_cut1_fC.Draw('same')
+
+  hb_cut2_fC = fi.Get('hist_hb_totfCinTS_cut8')
+  hb_cut2_fC.Scale(10.0 / hb_cut2_fC.GetEntries() )
+  hb_cut2_fC.GetXaxis().SetTitle(xaxis)
+  hb_cut2_fC.GetYaxis().SetTitle(yaxis_fC)
+  hb_cut2_fC.SetTitle(hb_title_fC)
+  hb_cut2_fC.SetLineColor(cut2_color)
+  hb_cut2_fC.Draw('same')
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(hb_cut0_fC, legend_cut0_label, 'l')
+  leg.AddEntry(hb_cut1_fC, legend_cut1_label, 'l')
+  leg.AddEntry(hb_cut2_fC, legend_cut2_label, 'l')
+  leg.Draw('same')
+
+  c.SaveAs("hb_avgfC"+run_num+".png")
+
+
+# average charge replacement plots
+if True:
+  xaxis = 'TS'
+  yaxis_ADC = 'avg ADC'
+  yaxis_fC = 'avg fC'
+  title_ADC = run_string+'averge ADC per TS in pulse'
+  title_fC = run_string+'averge fC per TS in pulse'
+  ADC_high = 20.0
+  fC_high = 5.0
+  legend_title = ''
+  legend_xi = 0.7
+  legend_xf = 0.9
+  legend_yi = 0.7
+  legend_yf = 0.8
+  legend_good_label = 'Good hits'
+  legend_bad_label = 'Bad hits'
+  good_color = kBlack
+  bad_color = kRed
+
+  good_ADC = fi.Get('hist_ho_totADCinTS_allgood')
+  bad1_ADC = fi.Get('hist_ho_totADCinTS_nocut_12_41_bad')
+  bad2_ADC = fi.Get('hist_ho_totADCinTS_nocut_12_42_bad')
+  bad3_ADC = fi.Get('hist_ho_totADCinTS_nocut_12_43_bad')
+  bad_ADC = bad1_ADC.Clone()
+  bad_ADC.Add(bad2_ADC)
+  bad_ADC.Add(bad3_ADC)
+
+  good_ADC.Scale(10.0 / good_ADC.GetEntries() )
+  bad_ADC.Scale(10.0 / bad_ADC.GetEntries() )
+  good_ADC.SetMinimum(0)
+  good_ADC.SetMaximum(ADC_high)
+  good_ADC.SetLineColor(good_color)
+  bad_ADC.SetLineColor(bad_color)
+
+  good_ADC.GetXaxis().SetTitle(xaxis)
+  good_ADC.GetYaxis().SetTitle(yaxis)
+  good_ADC.SetTitle(title_ADC)
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good_ADC, legend_good_label, 'l')
+  leg.AddEntry(bad_ADC, legend_bad_label, 'l')
+
+  good_ADC.Draw()
+  bad_ADC.Draw('same')
+  leg.Draw('same')
+
+  c.SaveAs("replacement_avgADC"+run_num+".png")
+
+  good_fC = fi.Get('hist_ho_totfCinTS_allgood')
+  bad1_fC = fi.Get('hist_ho_totfCinTS_nocut_12_41_bad')
+  bad2_fC = fi.Get('hist_ho_totfCinTS_nocut_12_42_bad')
+  bad3_fC = fi.Get('hist_ho_totfCinTS_nocut_12_43_bad')
+  bad_fC = bad1_fC.Clone()
+  bad_fC.Add(bad2_fC)
+  bad_fC.Add(bad3_fC)
+
+  good_fC.Scale(10.0 / good_fC.GetEntries() )
+  bad_fC.Scale(10.0 / bad_fC.GetEntries() )
+  good_fC.SetMinimum(0)
+  good_fC.SetMaximum(fC_high)
+  good_fC.SetLineColor(good_color)
+  bad_fC.SetLineColor(bad_color)
+
+  good_fC.GetXaxis().SetTitle(xaxis)
+  good_fC.GetYaxis().SetTitle(yaxis)
+  good_fC.SetTitle(title_fC)
+
+  leg = TLegend(legend_xi, legend_yi, legend_xf, legend_yf, legend_title)
+  leg.AddEntry(good_fC, legend_good_label, 'l')
+  leg.AddEntry(bad_fC, legend_bad_label, 'l')
+
+  good_fC.Draw()
+  bad_fC.Draw('same')
+  leg.Draw('same')
+
+  c.SaveAs("replacement_avgfC"+run_num+".png")
 
