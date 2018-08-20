@@ -1,6 +1,6 @@
 executable            = condor_makeplots.sh
 input                 = ../fed_plots.py
-arguments             = $(Process) 321005jetht root://cmseos.fnal.gov//store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid_JetHT/JetHT/hcaltuple_run321005/180813_153208/0000
+arguments             = $(Process) 321005 root://cmseos.fnal.gov//store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid_JetHT/JetHT/hcaltuple_run321005/180813_153208/0000
 initialdir            = condor_run321005_jetht_makeplots
 output                = out_$(Cluster)_$(Process).txt
 error                 = out_$(Cluster)_$(Process).txt
