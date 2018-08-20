@@ -2,3 +2,4 @@ plotting/
 *.pyc
 *.root
 *.png
+crab_*/
