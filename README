@@ -6,3 +6,7 @@ condor_python/
   submiting python plotting scripts using condor
 cpp/
   work in progress of c++ event loop plotters
+
+location of ntuples, cmslpc.fnal.gov:
+/eos/uscms/store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid_JetHT
+/eos/uscms/store/user/bchiari1/noreplica/hcal/task9/multirun_allbadcapid_zerobias
