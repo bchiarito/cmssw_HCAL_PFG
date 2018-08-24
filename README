@@ -1,5 +1,5 @@
 ntuplizer/
-  changed version of hcal ntuplizer
+  changed version of hcal ntuplizer, as well as crab jobs of ntuplizer
 python/
   python event loop plotters
 condor_python/
